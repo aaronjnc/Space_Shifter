@@ -4,6 +4,8 @@
 #include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerStart.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -13,13 +15,27 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	CameraComponent->SetupAttachment(RootComponent);
+
+	bInTheFuture = true;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	TArray<AActor*> PlayerStarts;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+	for (const AActor* PlayerStart : PlayerStarts)
+	{
+		if (PlayerStart->ActorHasTag(FutureStartTag))
+		{
+			FutureStartPosition = PlayerStart->GetActorLocation();
+		}
+		else if (PlayerStart->ActorHasTag(PastStartTag))
+		{
+			PastStartPosition = PlayerStart->GetActorLocation();
+		}
+	}
 }
 
 // Called every frame
@@ -52,3 +68,16 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookDir.Y);
 }
 
+void APlayerCharacter::ShiftTime()
+{
+	FVector RefPosition = PastStartPosition;
+	FVector NewRefPosition = FutureStartPosition;
+	if (bInTheFuture)
+	{
+		RefPosition = FutureStartPosition;
+		NewRefPosition = PastStartPosition;
+	}
+	const FVector RelativePosition = GetActorLocation() - RefPosition + NewRefPosition;
+	SetActorLocation(RelativePosition);
+	bInTheFuture = !bInTheFuture;
+}

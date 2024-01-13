@@ -18,6 +18,18 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
+	UPROPERTY(EditAnywhere, Category = "Shifting")
+	FName FutureStartTag;
+
+	UPROPERTY(EditAnywhere, Category = "Shifting")
+	FName PastStartTag;
+
+	FVector FutureStartPosition;
+
+	FVector PastStartPosition;
+
+	bool bInTheFuture;
+
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -36,5 +48,7 @@ public:
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+
+	void ShiftTime();
 
 };

@@ -28,6 +28,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* ShiftAction;
+
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 
 protected:
