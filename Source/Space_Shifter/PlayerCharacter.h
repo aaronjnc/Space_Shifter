@@ -34,6 +34,8 @@ private:
 
 	bool bInTheFuture;
 
+	bool bPortalActive;
+
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -55,8 +57,14 @@ public:
 
 	void ShiftTime();
 
+	void PortalAction();
+
+private:
+	
 	void ActivatePortal();
 
 	void DeactivatePortal();
+
+	void UpdateCaptureLocation();
 
 };

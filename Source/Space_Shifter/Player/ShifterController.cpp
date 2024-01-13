@@ -53,5 +53,6 @@ void AShifterController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, PlayerCharacter.Get(), &APlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, PlayerCharacter.Get(), &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, PlayerCharacter.Get(), &APlayerCharacter::ShiftTime);
+		EnhancedInputComponent->BindAction(PortalAction, ETriggerEvent::Completed, PlayerCharacter.Get(), &APlayerCharacter::PortalAction);
 	}
 }

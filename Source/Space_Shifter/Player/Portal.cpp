@@ -32,6 +32,8 @@ void UPortal::BeginPlay()
 	SceneCaptureActor = GetWorld()->SpawnActor<AActor>(SceneCaptureSubclass, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation(), SpawnParameters);
 	SceneCaptureComponent = SceneCaptureActor->GetComponentByClass<USceneCaptureComponent2D>();
 	SceneCaptureComponent->TextureTarget = TextureRenderTarget;
+
+	DeactivatePortal();
 }
 
 void UPortal::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

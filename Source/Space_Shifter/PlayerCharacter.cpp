@@ -40,14 +40,7 @@ void APlayerCharacter::BeginPlay()
 			PastStartPosition = PlayerStart->GetActorLocation();
 		}
 	}
-	if (bInTheFuture)
-	{
-		PortalComponent->UpdateCaptureLocation(GetActorLocation() - FutureStartPosition + PastStartPosition);
-	}
-	else
-	{
-		PortalComponent->UpdateCaptureLocation(GetActorLocation() - PastStartPosition + FutureStartPosition);
-	}
+	UpdateCaptureLocation();
 }
 
 // Called every frame
@@ -55,6 +48,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bPortalActive)
+	{
+		UpdateCaptureLocation();
+	}
 }
 
 // Called to bind functionality to input
@@ -92,15 +89,40 @@ void APlayerCharacter::ShiftTime()
 	const FVector RelativePosition = GetActorLocation() - RefPosition + NewRefPosition;
 	SetActorLocation(RelativePosition);
 	bInTheFuture = !bInTheFuture;
-	PortalComponent->UpdateCaptureLocation(GetActorLocation() - NewRefPosition + RefPosition);
+	UpdateCaptureLocation();
+}
+
+void APlayerCharacter::PortalAction()
+{
+	if (bPortalActive)
+	{
+		DeactivatePortal();
+	}
+	else
+	{
+		ActivatePortal();
+	}
+	bPortalActive = !bPortalActive;
 }
 
 void APlayerCharacter::ActivatePortal()
 {
-	
+	PortalComponent->ActivatePortal();
 }
 
 void APlayerCharacter::DeactivatePortal()
 {
-	
+	PortalComponent->DeactivatePortal();
+}
+
+void APlayerCharacter::UpdateCaptureLocation()
+{
+	if (bInTheFuture)
+	{
+		PortalComponent->UpdateCaptureLocation(PortalComponent->GetComponentLocation() - FutureStartPosition + PastStartPosition);
+	}
+	else
+	{
+		PortalComponent->UpdateCaptureLocation(PortalComponent->GetComponentLocation() - PastStartPosition + FutureStartPosition);
+	}
 }
