@@ -3,10 +3,27 @@
 
 #include "ShifterController.h"
 #include "InputAction.h"
-#include "InputMappingContext.h"
 #include "Space_Shifter/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "StereoRendering.h"
+#include "SceneView.h"
+
+FMatrix AShifterController::GetCameraProjectionMatrix()
+{
+	FMatrix ProjectionMatrix;
+
+	if( GetLocalPlayer() != nullptr )
+	{
+		FSceneViewProjectionData PlayerProjectionData;
+
+		GetLocalPlayer()->GetProjectionData( GetLocalPlayer()->ViewportClient->Viewport, PlayerProjectionData);
+		
+		ProjectionMatrix = PlayerProjectionData.ProjectionMatrix;
+	}
+
+	return ProjectionMatrix;
+}
 
 void AShifterController::BeginPlay()
 {

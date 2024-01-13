@@ -7,6 +7,7 @@
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
+class UPortal;
 struct FInputActionValue;
 UCLASS()
 class SPACE_SHIFTER_API APlayerCharacter : public ACharacter
@@ -17,6 +18,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UPortal> PortalComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Shifting")
 	FName FutureStartTag;
@@ -50,5 +54,9 @@ public:
 	void Look(const FInputActionValue& Value);
 
 	void ShiftTime();
+
+	void ActivatePortal();
+
+	void DeactivatePortal();
 
 };

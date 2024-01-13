@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "Player/Portal.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -15,6 +16,9 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	CameraComponent->SetupAttachment(RootComponent);
+
+	PortalComponent = CreateDefaultSubobject<UPortal>("Portal Component");
+	PortalComponent->SetupAttachment(RootComponent);
 
 	bInTheFuture = true;
 }
@@ -35,6 +39,14 @@ void APlayerCharacter::BeginPlay()
 		{
 			PastStartPosition = PlayerStart->GetActorLocation();
 		}
+	}
+	if (bInTheFuture)
+	{
+		PortalComponent->UpdateCaptureLocation(GetActorLocation() - FutureStartPosition + PastStartPosition);
+	}
+	else
+	{
+		PortalComponent->UpdateCaptureLocation(GetActorLocation() - PastStartPosition + FutureStartPosition);
 	}
 }
 
@@ -80,4 +92,15 @@ void APlayerCharacter::ShiftTime()
 	const FVector RelativePosition = GetActorLocation() - RefPosition + NewRefPosition;
 	SetActorLocation(RelativePosition);
 	bInTheFuture = !bInTheFuture;
+	PortalComponent->UpdateCaptureLocation(GetActorLocation() - NewRefPosition + RefPosition);
+}
+
+void APlayerCharacter::ActivatePortal()
+{
+	
+}
+
+void APlayerCharacter::DeactivatePortal()
+{
+	
 }

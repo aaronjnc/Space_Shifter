@@ -33,6 +33,10 @@ private:
 
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 
+public:
+
+	FMatrix GetCameraProjectionMatrix();
+
 protected:
 
 	virtual void BeginPlay() override;
