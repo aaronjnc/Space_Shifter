@@ -24,9 +24,10 @@ APlayerCharacter::APlayerCharacter()
 	PortalComponent->SetupAttachment(RootComponent);
 
 	GrabberComponent = CreateDefaultSubobject<UGrabber>("Grabber Component");
+	GrabberComponent->SetupAttachment(CameraComponent);
 
 	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>("Physics Handle");
-
+	
 	bInTheFuture = true;
 }
 
@@ -103,6 +104,10 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Interact()
 {
+	if (GrabberComponent->GetIsGrabbing())
+	{
+		GrabberComponent->Release();
+	}
 	if (!InteractObject.IsValid())
 	{
 		return;

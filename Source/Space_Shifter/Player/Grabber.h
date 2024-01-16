@@ -14,6 +14,10 @@ class SPACE_SHIFTER_API UGrabber : public USceneComponent
 {
 	GENERATED_BODY()
 
+private:
+
+	bool bIsGrabbing;
+
 public:	
 	// Sets default values for this component's properties
 	UGrabber();
@@ -31,6 +35,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Release();
+
+	bool GetIsGrabbing();
 
 private:
 

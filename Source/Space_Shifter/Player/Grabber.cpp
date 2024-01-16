@@ -49,7 +49,7 @@ void UGrabber::Grab(AInteractable* Interactable)
 	HitComponent->WakeAllRigidBodies();
 	Interactable->Tags.Add("Grabbed");
 	PhysicsHandle->GrabComponentAtLocationWithRotation(HitComponent, NAME_None, Interactable->GetActorLocation(), GetComponentRotation());
-	UE_LOG(LogTemp, Warning, TEXT("Grab: %s"), *Interactable->GetName());
+	bIsGrabbing = true;
 }
 
 void UGrabber::Release()
@@ -62,6 +62,12 @@ void UGrabber::Release()
 		return;
 	GrabComponent->GetOwner()->Tags.Remove("Grabbed");
 	PhysicsHandle->ReleaseComponent();
+	bIsGrabbing = false;
+}
+
+bool UGrabber::GetIsGrabbing()
+{
+	return bIsGrabbing;
 }
 
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const 
