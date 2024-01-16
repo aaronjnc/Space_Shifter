@@ -13,7 +13,7 @@ void UPortal::UpdateCaptureLocation(FVector Location)
 {
 	SceneCaptureActor->SetActorLocation(Location);
 	SceneCaptureActor->SetActorRotation(PlayerCharacter->GetActorRotation());
-	SceneCaptureComponent->CaptureScene();
+	//SceneCaptureComponent->CaptureScene();
 }
 
 void UPortal::ActivatePortal()
@@ -106,7 +106,8 @@ void UPortal::UpdateCapture()
     	DynamicMaterial->SetTextureParameterValue(TEXT("txt_Portal"), TextureRenderTarget);
         SceneCaptureComponent->TextureTarget = TextureRenderTarget;
 
-        SceneCaptureComponent->CaptureScene();
+    	SceneCaptureComponent->CustomProjectionMatrix = ShifterController->GetCameraProjectionMatrix();
+        //SceneCaptureComponent->CaptureScene();
     }
 }
 
@@ -124,6 +125,9 @@ void UPortal::BeginPlay()
 	ShifterController = Cast<AShifterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	DynamicMaterial = CreateDynamicMaterialInstance(0, ParentMaterial);
+
+	//SetupCaptureSettings();
+	
 	SetMaterial(0, DynamicMaterial);
 
 	GeneratePortalTexture();
