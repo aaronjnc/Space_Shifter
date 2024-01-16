@@ -7,6 +7,7 @@
 #include "Grabber.generated.h"
 
 class UPhysicsHandleComponent;
+class AInteractable;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACE_SHIFTER_API UGrabber : public USceneComponent
@@ -26,7 +27,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Grab();
+	void Grab(AInteractable* Interactable);
 
 	UFUNCTION(BlueprintCallable)
 	void Release();

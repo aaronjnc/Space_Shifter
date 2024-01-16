@@ -3,6 +3,7 @@
 
 #include "Grabber.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Space_Shifter/Interactables/Interactable.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -12,6 +13,7 @@ UGrabber::UGrabber()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	
 }
 
 
@@ -34,27 +36,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	}
 }
 
-void UGrabber::Grab() 
+void UGrabber::Grab(AInteractable* Interactable) 
 {
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
 	if (PhysicsHandle == nullptr) {
 		return;
 	}
 
-	FHitResult HitResult;
-	bool HasHit = GetGrabbableInReach(HitResult);
-	if (HasHit) {
-		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-		HitComponent->SetSimulatePhysics(true);
-		AActor* Actor = HitResult.GetActor();
-		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		HitComponent->WakeAllRigidBodies();
-		Actor->Tags.Add("Grabbed");
-		PhysicsHandle->GrabComponentAtLocationWithRotation(HitComponent, NAME_None, HitResult.ImpactPoint, GetComponentRotation());
-	}
-	else {
-		UE_LOG(LogTemp, Display, TEXT("Not hit"));
-	}
+	UPrimitiveComponent* HitComponent = Interactable->GetMesh();
+	HitComponent->SetSimulatePhysics(true);
+	Interactable->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	HitComponent->WakeAllRigidBodies();
+	Interactable->Tags.Add("Grabbed");
+	PhysicsHandle->GrabComponentAtLocationWithRotation(HitComponent, NAME_None, Interactable->GetActorLocation(), GetComponentRotation());
+	UE_LOG(LogTemp, Warning, TEXT("Grab: %s"), *Interactable->GetName());
 }
 
 void UGrabber::Release()
