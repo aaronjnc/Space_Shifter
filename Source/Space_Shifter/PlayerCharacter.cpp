@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "Player/Portal.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -15,6 +16,9 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	CameraComponent->SetupAttachment(RootComponent);
+
+	PortalComponent = CreateDefaultSubobject<UPortal>("Portal Component");
+	PortalComponent->SetupAttachment(RootComponent);
 
 	bInTheFuture = true;
 }
@@ -36,6 +40,7 @@ void APlayerCharacter::BeginPlay()
 			PastStartPosition = PlayerStart->GetActorLocation();
 		}
 	}
+	UpdateCaptureLocation();
 }
 
 // Called every frame
@@ -43,6 +48,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bPortalActive)
+	{
+		UpdateCaptureLocation();
+	}
 }
 
 // Called to bind functionality to input
@@ -80,4 +89,45 @@ void APlayerCharacter::ShiftTime()
 	const FVector RelativePosition = GetActorLocation() - RefPosition + NewRefPosition;
 	SetActorLocation(RelativePosition);
 	bInTheFuture = !bInTheFuture;
+	UpdateCaptureLocation();
+}
+
+void APlayerCharacter::PortalAction()
+{
+	if (bPortalActive)
+	{
+		DeactivatePortal();
+	}
+	else
+	{
+		ActivatePortal();
+	}
+	bPortalActive = !bPortalActive;
+}
+
+UCameraComponent* APlayerCharacter::GetCameraComponent()
+{
+	return CameraComponent;
+}
+
+void APlayerCharacter::ActivatePortal()
+{
+	PortalComponent->ActivatePortal();
+}
+
+void APlayerCharacter::DeactivatePortal()
+{
+	PortalComponent->DeactivatePortal();
+}
+
+void APlayerCharacter::UpdateCaptureLocation()
+{
+	if (bInTheFuture)
+	{
+		PortalComponent->UpdateCaptureLocation(PortalComponent->GetComponentLocation() - FutureStartPosition + PastStartPosition);
+	}
+	else
+	{
+		PortalComponent->UpdateCaptureLocation(PortalComponent->GetComponentLocation() - PastStartPosition + FutureStartPosition);
+	}
 }

@@ -31,7 +31,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* ShiftAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* PortalAction;
+
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
+
+public:
+
+	FMatrix GetCameraProjectionMatrix();
 
 protected:
 
