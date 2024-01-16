@@ -105,6 +105,11 @@ void APlayerCharacter::PortalAction()
 	bPortalActive = !bPortalActive;
 }
 
+UCameraComponent* APlayerCharacter::GetCameraComponent()
+{
+	return CameraComponent;
+}
+
 void APlayerCharacter::ActivatePortal()
 {
 	PortalComponent->ActivatePortal();

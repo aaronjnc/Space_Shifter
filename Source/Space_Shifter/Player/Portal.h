@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Portal.generated.h"
 
 class AShifterController;
@@ -18,11 +18,17 @@ private:
 
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 
-	UPROPERTY(EditAnywhere, Category = "Rendering")
+	AShifterController* ShifterController;
+
 	UTextureRenderTarget2D* TextureRenderTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Rendering")
 	TSubclassOf<AActor> SceneCaptureSubclass;
+
+	UPROPERTY(EditAnywhere, Category = "Rendering")
+	UMaterial* ParentMaterial;
+
+	UMaterialInstanceDynamic* DynamicMaterial;
 
 	TObjectPtr<AActor> SceneCaptureActor;
 
@@ -37,9 +43,17 @@ public:
 
 	void DeactivatePortal();
 
+	void GeneratePortalTexture();
+
+	void UpdateCapture();
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+
+	void SetupCaptureSettings();
 };

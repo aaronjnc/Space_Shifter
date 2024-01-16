@@ -59,6 +59,8 @@ public:
 
 	void PortalAction();
 
+	UCameraComponent* GetCameraComponent();
+
 private:
 	
 	void ActivatePortal();
