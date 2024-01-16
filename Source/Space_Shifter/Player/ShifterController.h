@@ -34,6 +34,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* PortalAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* InteractAction;
+
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 
 public:

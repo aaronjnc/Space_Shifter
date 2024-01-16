@@ -6,6 +6,9 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interactables/Interactable.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Player/Grabber.h"
 #include "Player/Portal.h"
 
 // Sets default values
@@ -20,6 +23,11 @@ APlayerCharacter::APlayerCharacter()
 	PortalComponent = CreateDefaultSubobject<UPortal>("Portal Component");
 	PortalComponent->SetupAttachment(RootComponent);
 
+	GrabberComponent = CreateDefaultSubobject<UGrabber>("Grabber Component");
+	GrabberComponent->SetupAttachment(CameraComponent);
+
+	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>("Physics Handle");
+	
 	bInTheFuture = true;
 }
 
@@ -48,6 +56,23 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FHitResult HitResult;
+	const FVector& CameraLoc = GetCameraComponent()->GetComponentLocation();
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLoc, CameraLoc + CameraComponent->GetForwardVector() * InteractDistance, ECC_GameTraceChannel2))
+	{
+		if (HitResult.GetActor()->IsA(AInteractable::StaticClass()))
+		{
+			InteractObject = Cast<AInteractable>(HitResult.GetActor());	
+		}
+		else
+		{
+			InteractObject = nullptr;
+		}
+	}
+	else
+	{
+		InteractObject = nullptr;
+	}
 	if (bPortalActive)
 	{
 		UpdateCaptureLocation();
@@ -75,6 +100,26 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 	AddControllerYawInput(LookDir.X);
 	AddControllerPitchInput(LookDir.Y);
+}
+
+void APlayerCharacter::Interact()
+{
+	if (GrabberComponent->GetIsGrabbing())
+	{
+		GrabberComponent->Release();
+	}
+	if (!InteractObject.IsValid())
+	{
+		return;
+	}
+	if (InteractObject->Tags.Contains("Grabbable"))
+	{
+		GrabberComponent->Grab(InteractObject.Get());
+	}
+	else
+	{
+		InteractObject->Interact();
+	}
 }
 
 void APlayerCharacter::ShiftTime()
