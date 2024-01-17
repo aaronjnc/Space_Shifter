@@ -14,10 +14,10 @@ class SPACE_SHIFTER_API AInteractable : public AActor
 {
 	GENERATED_BODY()
 
-private:
+protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	USphereComponent* SphereComponent;
+	UPrimitiveComponent* CollisionComponent;
 	
 public:	
 	// Sets default values for this actor's properties

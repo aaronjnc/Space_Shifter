@@ -11,9 +11,6 @@ AInteractable::AInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
-
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Component"));
-	SphereComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -37,5 +34,5 @@ void AInteractable::Interact()
 
 UPrimitiveComponent* AInteractable::GetMesh()
 {
-	return SphereComponent;
+	return CollisionComponent;
 }
