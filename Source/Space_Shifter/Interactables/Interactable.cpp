@@ -2,7 +2,9 @@
 
 
 #include "Interactable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
+#include "Space_Shifter/Player/ShifterController.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -17,7 +19,7 @@ AInteractable::AInteractable()
 void AInteractable::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PlayerController = Cast<AShifterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 // Called every frame

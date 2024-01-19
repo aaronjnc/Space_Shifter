@@ -8,6 +8,7 @@
 #include "Interactable.generated.h"
 
 class USphereComponent;
+class AShifterController;
 
 UCLASS()
 class SPACE_SHIFTER_API AInteractable : public AActor
@@ -18,6 +19,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPrimitiveComponent* CollisionComponent;
+
+	TWeakObjectPtr<AShifterController> PlayerController;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -31,7 +34,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Interact();
+	virtual void Interact();
 
 	UPrimitiveComponent* GetMesh();
 

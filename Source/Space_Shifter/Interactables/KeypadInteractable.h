@@ -26,5 +26,7 @@ protected:
 public:
 
 	AKeypadInteractable();
+
+	virtual void Interact() override;
 	
 };
