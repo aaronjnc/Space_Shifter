@@ -2,7 +2,9 @@
 
 
 #include "Interactable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
+#include "Space_Shifter/Player/ShifterController.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -11,16 +13,14 @@ AInteractable::AInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
-
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Component"));
-	SphereComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AInteractable::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PlayerController = Cast<AShifterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PlayerCharacter = Cast<APlayerCharacter>(PlayerController->GetCharacter());
 }
 
 // Called every frame
@@ -35,7 +35,11 @@ void AInteractable::Interact()
 	
 }
 
+void AInteractable::StopInteract()
+{
+}
+
 UPrimitiveComponent* AInteractable::GetMesh()
 {
-	return SphereComponent;
+	return CollisionComponent;
 }

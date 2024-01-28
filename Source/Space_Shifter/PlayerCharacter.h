@@ -49,6 +49,8 @@ private:
 
 	bool bPortalActive;
 
+	bool bIsInteracting;
+
 	TWeakObjectPtr<AInteractable> InteractObject;
 
 public:

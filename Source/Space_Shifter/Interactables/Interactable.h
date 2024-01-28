@@ -5,19 +5,24 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
+#include "Space_Shifter/PlayerCharacter.h"
 #include "Interactable.generated.h"
 
 class USphereComponent;
+class AShifterController;
 
 UCLASS()
 class SPACE_SHIFTER_API AInteractable : public AActor
 {
 	GENERATED_BODY()
 
-private:
+protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	USphereComponent* SphereComponent;
+	UPrimitiveComponent* CollisionComponent;
+
+	TWeakObjectPtr<AShifterController> PlayerController;
+	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -31,7 +36,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Interact();
+	virtual void Interact();
+
+	virtual void StopInteract();
 
 	UPrimitiveComponent* GetMesh();
 
