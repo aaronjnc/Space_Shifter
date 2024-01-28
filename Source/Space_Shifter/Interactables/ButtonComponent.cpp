@@ -3,3 +3,7 @@
 
 #include "ButtonComponent.h"
 
+FString UButtonComponent::ButtonClick()
+{
+	return ButtonValue;
+}

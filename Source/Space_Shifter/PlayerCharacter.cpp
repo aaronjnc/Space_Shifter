@@ -56,6 +56,11 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bIsInteracting)
+	{
+		return;
+	}
+
 	FHitResult HitResult;
 	const FVector& CameraLoc = GetCameraComponent()->GetComponentLocation();
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLoc, CameraLoc + CameraComponent->GetForwardVector() * InteractDistance, ECC_GameTraceChannel2))
@@ -88,6 +93,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	if (bIsInteracting)
+	{
+		return;
+	}
 	const FVector2D MoveDir = Value.Get<FVector2D>();
 
 	AddMovementInput(GetActorForwardVector(), MoveDir.Y);
@@ -96,6 +105,10 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
+	if (bIsInteracting)
+	{
+		return;
+	}
 	const FVector2D LookDir = Value.Get<FVector2D>();
 
 	AddControllerYawInput(LookDir.X);
@@ -116,9 +129,15 @@ void APlayerCharacter::Interact()
 	{
 		GrabberComponent->Grab(InteractObject.Get());
 	}
+	else if (!bIsInteracting)
+	{
+		bIsInteracting = true;
+		InteractObject->Interact();
+	}
 	else
 	{
-		InteractObject->Interact();
+		InteractObject->StopInteract();
+		bIsInteracting = false;
 	}
 }
 

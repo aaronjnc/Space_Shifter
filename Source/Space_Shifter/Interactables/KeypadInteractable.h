@@ -6,7 +6,7 @@
 #include "Interactable.h"
 #include "KeypadInteractable.generated.h"
 
-
+class UInputAction;
 class UBoxComponent;
 /**
  * 
@@ -23,10 +23,25 @@ protected:
 
 	TArray<UBoxComponent*> ButtonBoxes;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* ClickAction;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FVector CameraLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FRotator CameraRotation;
+
+	int BindingNum;
+
 public:
 
 	AKeypadInteractable();
 
 	virtual void Interact() override;
+
+	virtual void StopInteract() override;
+
+	void Click();
 	
 };

@@ -20,6 +20,7 @@ void AInteractable::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerController = Cast<AShifterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PlayerCharacter = Cast<APlayerCharacter>(PlayerController->GetCharacter());
 }
 
 // Called every frame
@@ -32,6 +33,10 @@ void AInteractable::Tick(float DeltaTime)
 void AInteractable::Interact()
 {
 	
+}
+
+void AInteractable::StopInteract()
+{
 }
 
 UPrimitiveComponent* AInteractable::GetMesh()

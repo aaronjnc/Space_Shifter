@@ -13,5 +13,13 @@ UCLASS()
 class SPACE_SHIFTER_API UButtonComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
+private:
+
+    UPROPERTY(EditAnywhere, Category = "Value")
+	FString ButtonValue;
+
+public:
+
+	FString ButtonClick();
 	
 };

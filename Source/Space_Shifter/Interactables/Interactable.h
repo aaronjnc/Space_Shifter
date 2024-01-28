@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
+#include "Space_Shifter/PlayerCharacter.h"
 #include "Interactable.generated.h"
 
 class USphereComponent;
@@ -21,6 +22,7 @@ protected:
 	UPrimitiveComponent* CollisionComponent;
 
 	TWeakObjectPtr<AShifterController> PlayerController;
+	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -35,6 +37,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact();
+
+	virtual void StopInteract();
 
 	UPrimitiveComponent* GetMesh();
 
