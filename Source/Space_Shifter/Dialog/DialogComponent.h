@@ -3,18 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DialogActionInterface.h"
 #include "Components/ActorComponent.h"
 #include "DialogComponent.generated.h"
 
+USTRUCT(BlueprintType)
 struct FCharacterStruct
 {
+	GENERATED_BODY()
+	
 	FString CharacterName;
 	FTexture* CharacterPortrait;
 };
 
+USTRUCT(BlueprintType)
 struct FDialogStruct
 {
-	FCharacterStruct* Character;
+	GENERATED_BODY()
+	
+	FCharacterStruct Character;
+	TArray<UDialogActionInterface> DialogActions;
 	FString Sentence;
 };
 
@@ -25,7 +33,12 @@ class SPACE_SHIFTER_API UDialogComponent : public UActorComponent
 
 private:
 
-	FDialogStruct DialogStruct;
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	TArray<UDialogActionInterface*> StartDialogActions;
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	TArray<UDialogActionInterface*> EndDialogActions;
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	TArray<FDialogStruct> DialogStructs;
 
 public:	
 	// Sets default values for this component's properties
