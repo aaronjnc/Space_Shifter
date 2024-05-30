@@ -22,7 +22,7 @@ struct FDialogStruct
 	GENERATED_BODY()
 	
 	FCharacterStruct Character;
-	TArray<UDialogActionInterface> DialogActions;
+	TArray<UDialogActionInterface*> DialogActions;
 	FString Sentence;
 };
 
@@ -34,9 +34,9 @@ class SPACE_SHIFTER_API UDialogComponent : public UActorComponent
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TArray<UDialogActionInterface*> StartDialogActions;
+	TArray<AActor*> StartDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TArray<UDialogActionInterface*> EndDialogActions;
+	TArray<AActor*> EndDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TArray<FDialogStruct> DialogStructs;
 
