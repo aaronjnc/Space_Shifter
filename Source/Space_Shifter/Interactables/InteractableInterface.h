@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "DialogActionInterface.generated.h"
+#include "InteractableInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UDialogActionInterface : public UInterface
+class UInteractableInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,16 +16,14 @@ class UDialogActionInterface : public UInterface
 /**
  * 
  */
-class SPACE_SHIFTER_API IDialogActionInterface
+class SPACE_SHIFTER_API IInteractableInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void StartDialog() = 0;
+	virtual void Interact() = 0;
 
-	virtual void DuringDialog() = 0;
-
-	virtual void EndDialog() = 0;
+	virtual void StopInteract() = 0;
 };

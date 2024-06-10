@@ -13,6 +13,10 @@ AInteractable::AInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
+
+	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Collider"));
+	CollisionComponent->SetupAttachment(RootComponent);
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 // Called when the game starts or when spawned
@@ -32,11 +36,12 @@ void AInteractable::Tick(float DeltaTime)
 
 void AInteractable::Interact()
 {
-	
+	return;
 }
 
 void AInteractable::StopInteract()
 {
+	return;
 }
 
 UPrimitiveComponent* AInteractable::GetMesh()

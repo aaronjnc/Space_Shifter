@@ -7,22 +7,36 @@
 #include "Components/ActorComponent.h"
 #include "DialogComponent.generated.h"
 
-USTRUCT(BlueprintType)
-struct FCharacterStruct
+UENUM(BlueprintType)
+enum EDialogAction
 {
-	GENERATED_BODY()
-	
-	FString CharacterName;
-	FTexture* CharacterPortrait;
+	Default,
 };
 
 USTRUCT(BlueprintType)
-struct FDialogStruct
+struct FCharacterStruct : public FTableRowBase
 {
 	GENERATED_BODY()
-	
-	FCharacterStruct Character;
-	TArray<UDialogActionInterface*> DialogActions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString CharacterName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture* CharacterPortrait;
+};
+
+USTRUCT(BlueprintType)
+struct FDialogStruct : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FDataTableRowHandle Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TEnumAsByte<EDialogAction>> SentenceDialogEnums;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Sentence;
 };
 
@@ -37,6 +51,8 @@ private:
 	TArray<AActor*> StartDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TArray<AActor*> EndDialogActions;
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	TMap<TEnumAsByte<EDialogAction>, UDialogActionInterface*> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TArray<FDialogStruct> DialogStructs;
 

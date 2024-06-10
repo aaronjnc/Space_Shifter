@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interactables/InteractableInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -51,7 +52,7 @@ private:
 
 	bool bIsInteracting;
 
-	TWeakObjectPtr<AInteractable> InteractObject;
+	TScriptInterface<IInteractableInterface> InteractObject;
 
 public:
 	// Sets default values for this character's properties

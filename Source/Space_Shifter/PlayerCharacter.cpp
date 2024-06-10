@@ -36,6 +36,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	TArray<AActor*> PlayerStarts;
+	InteractObject = TScriptInterface<IInteractableInterface>();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
 	for (const AActor* PlayerStart : PlayerStarts)
 	{
@@ -65,9 +66,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	const FVector& CameraLoc = GetCameraComponent()->GetComponentLocation();
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLoc, CameraLoc + CameraComponent->GetForwardVector() * InteractDistance, ECC_GameTraceChannel2))
 	{
-		if (HitResult.GetActor()->IsA(AInteractable::StaticClass()))
+		if (HitResult.GetActor()->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
 		{
-			InteractObject = Cast<AInteractable>(HitResult.GetActor());	
+			InteractObject.SetObject(HitResult.GetActor());
+			InteractObject.SetInterface(Cast<IInteractableInterface>(HitResult.GetActor()));
 		}
 		else
 		{
@@ -121,22 +123,23 @@ void APlayerCharacter::Interact()
 	{
 		GrabberComponent->Release();
 	}
-	if (!InteractObject.IsValid())
+	if (!InteractObject)
 	{
 		return;
 	}
-	if (InteractObject->Tags.Contains("Grabbable"))
+	AInteractable* InteractActor = Cast<AInteractable>(InteractObject.GetObject());
+	if (InteractActor && InteractActor->Tags.Contains("Grabbable"))
 	{
-		GrabberComponent->Grab(InteractObject.Get());
+		GrabberComponent->Grab(InteractActor);
 	}
 	else if (!bIsInteracting)
 	{
 		bIsInteracting = true;
-		InteractObject->Interact();
+		InteractObject.GetInterface()->Interact();
 	}
 	else
 	{
-		InteractObject->StopInteract();
+		InteractObject.GetInterface()->StopInteract();
 		bIsInteracting = false;
 	}
 }
