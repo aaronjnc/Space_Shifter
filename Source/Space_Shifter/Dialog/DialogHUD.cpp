@@ -6,10 +6,10 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-void UDialogHUD::BeginConversation(FDialogStruct InitialDialog)
+void UDialogHUD::DisplayDialog()
 {
-	FCharacterStruct TalkingCharacter = *CharacterMap[InitialDialog.Character].GetRow<FCharacterStruct>("");
-	if (InitialDialog.Character == ECharacterName::Player)
+	FCharacterStruct TalkingCharacter = *CharacterMap[CurrentDialog.Character].GetRow<FCharacterStruct>("");
+	if (CurrentDialog.Character == ECharacterName::Player)
 	{
 		PlayerPicture->SetVisibility(ESlateVisibility::Visible);
 		NPCPicture->SetVisibility(ESlateVisibility::Hidden);
@@ -22,5 +22,22 @@ void UDialogHUD::BeginConversation(FDialogStruct InitialDialog)
 		NPCPicture->SetBrushFromTexture(TalkingCharacter.CharacterPortrait);
 	}
 	NameTextBox->SetText(TalkingCharacter.CharacterName);
-	DialogTextBox->SetText(InitialDialog.Sentence);
+	DialogTextBox->SetText(CurrentDialog.Sentence);
+}
+
+void UDialogHUD::BeginConversation(FDialogStruct InitialDialog)
+{
+	CurrentDialog = InitialDialog;
+	DisplayDialog();
+}
+
+bool UDialogHUD::NextLine()
+{
+	if (CurrentDialog.NextSentence.IsNull())
+	{
+		return false;
+	}
+	CurrentDialog = *CurrentDialog.NextSentence.GetRow<FDialogStruct>("");
+	DisplayDialog();
+	return true;
 }
