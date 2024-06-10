@@ -42,7 +42,7 @@ void UGrabber::Grab(AInteractable* Interactable)
 	if (PhysicsHandle == nullptr) {
 		return;
 	}
-
+	UE_LOG(LogTemp, Warning, TEXT("Valid handle"));
 	UPrimitiveComponent* HitComponent = Interactable->GetMesh();
 	HitComponent->SetSimulatePhysics(true);
 	Interactable->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);

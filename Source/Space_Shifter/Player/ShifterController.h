@@ -6,12 +6,15 @@
 #include "GameFramework/PlayerController.h"
 #include "ShifterController.generated.h"
 
+
 /**
  * 
  */
 class UInputAction;
 class UInputMappingContext;
 class APlayerCharacter;
+class UWidgetComponent;
+class UDialogHUD;
 UCLASS()
 class SPACE_SHIFTER_API AShifterController : public APlayerController
 {
@@ -36,6 +39,11 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* InteractAction;
+
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UDialogHUD> DialogHUDSubclass;
+	
+	UDialogHUD* DialogWidget;
 
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 

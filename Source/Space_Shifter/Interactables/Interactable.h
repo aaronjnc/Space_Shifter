@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InteractableInterface.h"
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 #include "Space_Shifter/PlayerCharacter.h"
@@ -12,7 +13,7 @@ class USphereComponent;
 class AShifterController;
 
 UCLASS()
-class SPACE_SHIFTER_API AInteractable : public AActor
+class SPACE_SHIFTER_API AInteractable : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 
@@ -36,9 +37,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Interact();
+	virtual void Interact() override;
 
-	virtual void StopInteract();
+	virtual void StopInteract() override;
 
 	UPrimitiveComponent* GetMesh();
 

@@ -4,10 +4,12 @@
 #include "ShifterController.h"
 #include "InputAction.h"
 #include "Space_Shifter/PlayerCharacter.h"
+#include "Space_Shifter/Dialog/DialogHUD.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "StereoRendering.h"
 #include "SceneView.h"
+#include "Space_Shifter/Dialog/DialogManager.h"
 
 FMatrix AShifterController::GetCameraProjectionMatrix()
 {
@@ -32,6 +34,15 @@ void AShifterController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	if (IsValid(DialogHUDSubclass))
+	{
+		DialogWidget = CreateWidget<UDialogHUD>(this, DialogHUDSubclass);
+		DialogWidget->AddToViewport();
+		DialogWidget->SetVisibility(ESlateVisibility::Hidden);
+
+		GetGameInstance()->GetSubsystem<UDialogManager>()->AssignDialogHUD(DialogWidget);
 	}
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
