@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DialogActionInterface.h"
 #include "Components/ActorComponent.h"
+#include "Space_Shifter/Interactables/InteractableInterface.h"
 #include "DialogComponent.generated.h"
 
 UENUM(BlueprintType)
@@ -13,16 +14,23 @@ enum EDialogAction
 	Default,
 };
 
+UENUM(BlueprintType)
+enum ECharacterName
+{
+	Player,
+	Dave,
+};
+
 USTRUCT(BlueprintType)
 struct FCharacterStruct : public FTableRowBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString CharacterName;
+	FText CharacterName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture* CharacterPortrait;
+	UTexture2D* CharacterPortrait;
 };
 
 USTRUCT(BlueprintType)
@@ -31,17 +39,20 @@ struct FDialogStruct : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDataTableRowHandle Character;
+	TEnumAsByte<ECharacterName> Character;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TEnumAsByte<EDialogAction>> SentenceDialogEnums;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Sentence;
+	FText Sentence;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FDataTableRowHandle NextSentence;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SPACE_SHIFTER_API UDialogComponent : public UActorComponent
+class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInteractableInterface
 {
 	GENERATED_BODY()
 
@@ -54,7 +65,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<EDialogAction>, UDialogActionInterface*> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TArray<FDialogStruct> DialogStructs;
+	FDataTableRowHandle DialogStruct;
 
 public:	
 	// Sets default values for this component's properties
@@ -68,5 +79,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	virtual void Interact() override;
+
+	virtual void StopInteract() override;
+	
 };

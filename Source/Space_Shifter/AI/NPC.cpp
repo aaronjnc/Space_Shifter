@@ -28,10 +28,10 @@ void ANPC::Tick(float DeltaTime)
 
 void ANPC::Interact()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+	DialogComponent->Interact();
 }
 
 void ANPC::StopInteract()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stop Interact"));
+	DialogComponent->StopInteract();
 }

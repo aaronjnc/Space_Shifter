@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "StereoRendering.h"
 #include "SceneView.h"
+#include "Space_Shifter/Dialog/DialogManager.h"
 
 FMatrix AShifterController::GetCameraProjectionMatrix()
 {
@@ -39,7 +40,9 @@ void AShifterController::BeginPlay()
 	{
 		DialogWidget = CreateWidget<UDialogHUD>(this, DialogHUDSubclass);
 		DialogWidget->AddToViewport();
-		DialogWidget->SetVisibility(ESlateVisibility::Visible);
+		DialogWidget->SetVisibility(ESlateVisibility::Hidden);
+
+		GetGameInstance()->GetSubsystem<UDialogManager>()->AssignDialogHUD(DialogWidget);
 	}
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
