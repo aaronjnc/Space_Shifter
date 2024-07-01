@@ -23,9 +23,5 @@ class SPACE_SHIFTER_API IDialogActionInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void StartDialog() = 0;
-
-	virtual void DuringDialog() = 0;
-
-	virtual void EndDialog() = 0;
+	virtual void PerformDialogAction() = 0;
 };

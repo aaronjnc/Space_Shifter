@@ -12,6 +12,7 @@ UENUM(BlueprintType)
 enum EDialogAction
 {
 	DefaultAction,
+	Destroy,
 };
 
 UENUM(BlueprintType)
@@ -59,11 +60,7 @@ class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInter
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TArray<AActor*> StartDialogActions;
-	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TArray<AActor*> EndDialogActions;
-	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TMap<TEnumAsByte<EDialogAction>, UDialogActionInterface*> SentenceDialogActions;
+	TMap<TEnumAsByte<EDialogAction>, IDialogActionInterface*> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	FDataTableRowHandle DialogStruct;
 
@@ -82,5 +79,7 @@ public:
 	virtual EMappingContexts Interact() override;
 
 	virtual EMappingContexts StopInteract() override;
+
+	void TriggerDialogAction(EDialogAction DialogAction);
 	
 };

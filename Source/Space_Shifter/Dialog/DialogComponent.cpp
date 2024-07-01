@@ -5,6 +5,7 @@
 
 #include "DialogManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "DialogActionInterface.h"
 
 // Sets default values for this component's properties
 UDialogComponent::UDialogComponent()
@@ -37,12 +38,17 @@ void UDialogComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 EMappingContexts UDialogComponent::Interact()
 {
-	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(*DialogStruct.GetRow<FDialogStruct>(""));
+	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(*DialogStruct.GetRow<FDialogStruct>(""), this);
 	return EMappingContexts::Dialog;
 }
 
 EMappingContexts UDialogComponent::StopInteract()
 {
 	return EMappingContexts::DefaultContext;
+}
+
+void UDialogComponent::TriggerDialogAction(EDialogAction DialogAction)
+{
+	SentenceDialogActions[DialogAction]->PerformDialogAction();
 }
 
