@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AKeypadInteractable::AKeypadInteractable()
 {
@@ -18,7 +19,7 @@ AKeypadInteractable::AKeypadInteractable()
 	CollisionComponent->SetSimulatePhysics(true);
 }
 
-void AKeypadInteractable::Interact()
+EMappingContexts AKeypadInteractable::Interact()
 {
 	Super::Interact();
 	PlayerController->SetShowMouseCursor(true);
@@ -30,18 +31,11 @@ void AKeypadInteractable::Interact()
 	CameraComponent->bUsePawnControlRotation = false;
 	CameraComponent->SetRelativeRotation(FRotator::ZeroRotator);
 	UE_LOG(LogTemp, Warning, TEXT("New Rotation: %s"), *CameraComponent->GetRelativeRotation().ToString());
-	if (PlayerController.IsValid())
-	{
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			EnhancedInputComponent->BindAction(ClickAction, ETriggerEvent::Completed, this, &AKeypadInteractable::Click);
-			BindingNum = EnhancedInputComponent->GetNumActionBindings() - 1;
-		}
-	}
+	
+	return EMappingContexts::MouseInteraction;
 }
 
-void AKeypadInteractable::StopInteract()
+EMappingContexts AKeypadInteractable::StopInteract()
 {
 	Super::StopInteract();
 	PlayerController->bShowMouseCursor = false;
@@ -51,13 +45,8 @@ void AKeypadInteractable::StopInteract()
 	CameraComponent->SetRelativeLocation(FVector(0, 0, 50));
 	CameraComponent->bUsePawnControlRotation = true;
 	CameraComponent->SetRelativeRotation(FRotator::ZeroRotator);
-	if (PlayerController.IsValid())
-	{
-		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerController->InputComponent))
-		{
-			EnhancedInputComponent->RemoveActionBinding(BindingNum);
-		}
-	}
+
+	return EMappingContexts::DefaultContext;
 }
 
 void AKeypadInteractable::Click()
@@ -77,6 +66,26 @@ void AKeypadInteractable::Click()
 			UButtonComponent* ButtonHit = Cast<UButtonComponent>(Hit.GetComponent());
 			const FString& ButtonString = ButtonHit->ButtonClick();
 			UE_LOG(LogTemp, Warning, TEXT("Button String: %s"), *ButtonString);
+		}
+	}
+}
+
+void AKeypadInteractable::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GetWorld()->GetTimerManager().SetTimer(BeginPlayHandle, this, &AKeypadInteractable::BeginPlayDelayed, .1f, false);
+}
+
+void AKeypadInteractable::BeginPlayDelayed()
+{
+	if (PlayerController.IsValid())
+	{
+		PlayerController->SetupInput();
+		if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerController->InputComponent))
+		{
+			EnhancedInputComponent->BindAction(ClickAction, ETriggerEvent::Completed, this, &AKeypadInteractable::Click);
+			BindingNum = EnhancedInputComponent->GetNumActionBindings() - 1;
 		}
 	}
 }

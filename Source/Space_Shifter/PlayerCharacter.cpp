@@ -35,6 +35,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerController = Cast<AShifterController>(GetController());
 	TArray<AActor*> PlayerStarts;
 	InteractObject = TScriptInterface<IInteractableInterface>();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
@@ -95,10 +96,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
-	if (bIsInteracting)
-	{
-		return;
-	}
 	const FVector2D MoveDir = Value.Get<FVector2D>();
 
 	AddMovementInput(GetActorForwardVector(), MoveDir.Y);
@@ -107,10 +104,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	if (bIsInteracting)
-	{
-		return;
-	}
 	const FVector2D LookDir = Value.Get<FVector2D>();
 
 	AddControllerYawInput(LookDir.X);
@@ -119,6 +112,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Interact()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Interact"));
 	if (GrabberComponent->GetIsGrabbing())
 	{
 		GrabberComponent->Release();
@@ -127,6 +121,7 @@ void APlayerCharacter::Interact()
 	{
 		return;
 	}
+	EMappingContexts NewContext;
 	AInteractable* InteractActor = Cast<AInteractable>(InteractObject.GetObject());
 	if (InteractActor && InteractActor->Tags.Contains("Grabbable"))
 	{
@@ -135,13 +130,16 @@ void APlayerCharacter::Interact()
 	else if (!bIsInteracting)
 	{
 		bIsInteracting = true;
-		InteractObject.GetInterface()->Interact();
+		NewContext = InteractObject.GetInterface()->Interact();
+		PlayerController->SetMappingContext(NewContext);
 	}
 	else
 	{
-		InteractObject.GetInterface()->StopInteract();
+		NewContext = InteractObject.GetInterface()->StopInteract();
 		bIsInteracting = false;
+		PlayerController->SetMappingContext(NewContext);
 	}
+	
 }
 
 void APlayerCharacter::ShiftTime()

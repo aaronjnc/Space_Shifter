@@ -30,8 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Interact() override;
+	virtual EMappingContexts Interact() override;
 
-	virtual void StopInteract() override;
+	virtual EMappingContexts StopInteract() override;
 
 };

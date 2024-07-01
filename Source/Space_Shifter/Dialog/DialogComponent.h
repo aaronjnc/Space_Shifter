@@ -11,7 +11,7 @@
 UENUM(BlueprintType)
 enum EDialogAction
 {
-	Default,
+	DefaultAction,
 };
 
 UENUM(BlueprintType)
@@ -79,8 +79,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void Interact() override;
+	virtual EMappingContexts Interact() override;
 
-	virtual void StopInteract() override;
+	virtual EMappingContexts StopInteract() override;
 	
 };

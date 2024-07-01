@@ -54,6 +54,8 @@ private:
 
 	TScriptInterface<IInteractableInterface> InteractObject;
 
+	AShifterController* PlayerController;
+
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();

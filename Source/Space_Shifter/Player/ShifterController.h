@@ -15,6 +15,16 @@ class UInputMappingContext;
 class APlayerCharacter;
 class UWidgetComponent;
 class UDialogHUD;
+
+UENUM(BlueprintType)
+enum EMappingContexts
+{
+	DefaultContext,
+	Empty,
+	Dialog,
+	MouseInteraction,
+};
+
 UCLASS()
 class SPACE_SHIFTER_API AShifterController : public APlayerController
 {
@@ -23,7 +33,7 @@ class SPACE_SHIFTER_API AShifterController : public APlayerController
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputMappingContext* DefaultMappingContext;
+	TMap<TEnumAsByte<EMappingContexts>, UInputMappingContext*> MappingContexts;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* MoveAction;
@@ -40,6 +50,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* TalkAction;
+	
 	UPROPERTY(EditAnywhere, Category = "HUD")
 	TSubclassOf<UDialogHUD> DialogHUDSubclass;
 	
@@ -47,14 +60,22 @@ private:
 
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 
+	bool bInputSetup = false;
+
 public:
 
 	FMatrix GetCameraProjectionMatrix();
+
+	void SetMappingContext(const EMappingContexts& NewContext);
+
+	void SetupInput();
 
 protected:
 
 	virtual void BeginPlay() override;
 
 	virtual void SetupInputComponent() override;
+
+	void ContinueDialog();
 	
 };

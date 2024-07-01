@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Space_Shifter/Player/ShifterController.h"
 #include "UObject/Interface.h"
 #include "InteractableInterface.generated.h"
 
@@ -23,7 +24,7 @@ class SPACE_SHIFTER_API IInteractableInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void Interact() = 0;
+	virtual EMappingContexts Interact() = 0;
 
-	virtual void StopInteract() = 0;
+	virtual EMappingContexts StopInteract() = 0;
 };
