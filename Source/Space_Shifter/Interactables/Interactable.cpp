@@ -34,14 +34,14 @@ void AInteractable::Tick(float DeltaTime)
 
 }
 
-void AInteractable::Interact()
+EMappingContexts AInteractable::Interact()
 {
-	return;
+	return EMappingContexts::DefaultContext;
 }
 
-void AInteractable::StopInteract()
+EMappingContexts AInteractable::StopInteract()
 {
-	return;
+	return EMappingContexts::DefaultContext;
 }
 
 UPrimitiveComponent* AInteractable::GetMesh()

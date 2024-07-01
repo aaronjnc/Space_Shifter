@@ -26,12 +26,12 @@ void ANPC::Tick(float DeltaTime)
 
 }
 
-void ANPC::Interact()
+EMappingContexts ANPC::Interact()
 {
-	DialogComponent->Interact();
+	return DialogComponent->Interact();
 }
 
-void ANPC::StopInteract()
+EMappingContexts ANPC::StopInteract()
 {
-	DialogComponent->StopInteract();
+	return DialogComponent->StopInteract();
 }

@@ -35,8 +35,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<ECharacterName>, FDataTableRowHandle> CharacterMap;
 
+	FDialogStruct CurrentDialog;
+
 public:
 
+	void DisplayDialog();
+
 	void BeginConversation(FDialogStruct InitialDialog);
+
+	bool NextLine();
 	
 };

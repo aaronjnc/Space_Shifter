@@ -34,14 +34,22 @@ protected:
 
 	int BindingNum;
 
+	FTimerHandle BeginPlayHandle;
+
 public:
 
 	AKeypadInteractable();
 
-	virtual void Interact() override;
+	virtual EMappingContexts Interact() override;
 
-	virtual void StopInteract() override;
+	virtual EMappingContexts StopInteract() override;
 
 	void Click();
+
+protected:
+
+	virtual void BeginPlay() override;
+
+	void BeginPlayDelayed();
 	
 };

@@ -35,12 +35,14 @@ void UDialogComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UDialogComponent::Interact()
+EMappingContexts UDialogComponent::Interact()
 {
 	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(*DialogStruct.GetRow<FDialogStruct>(""));
+	return EMappingContexts::Dialog;
 }
 
-void UDialogComponent::StopInteract()
+EMappingContexts UDialogComponent::StopInteract()
 {
+	return EMappingContexts::DefaultContext;
 }
 

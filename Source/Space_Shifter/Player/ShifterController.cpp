@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "StereoRendering.h"
 #include "SceneView.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Space_Shifter/Dialog/DialogManager.h"
 
 FMatrix AShifterController::GetCameraProjectionMatrix()
@@ -27,14 +28,26 @@ FMatrix AShifterController::GetCameraProjectionMatrix()
 	return ProjectionMatrix;
 }
 
+void AShifterController::SetMappingContext(const EMappingContexts& NewContext)
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		Subsystem->AddMappingContext(MappingContexts[NewContext], 0);
+		UE_LOG(LogTemp, Warning, TEXT("Mapping context switched %s"), *UEnum::GetValueAsString(NewContext));
+	}
+}
+
+void AShifterController::SetupInput()
+{
+	SetupInputComponent();
+}
+
 void AShifterController::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	}
+
+	SetMappingContext(EMappingContexts::DefaultContext);
 
 	if (IsValid(DialogHUDSubclass))
 	{
@@ -53,7 +66,7 @@ void AShifterController::BeginPlay()
 
 void AShifterController::SetupInputComponent()
 {
-	if (!PlayerCharacter.IsValid())
+	if (!PlayerCharacter.IsValid() || bInputSetup )
 	{
 		return;
 	}
@@ -66,5 +79,15 @@ void AShifterController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, PlayerCharacter.Get(), &APlayerCharacter::ShiftTime);
 		EnhancedInputComponent->BindAction(PortalAction, ETriggerEvent::Completed, PlayerCharacter.Get(), &APlayerCharacter::PortalAction);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Completed, PlayerCharacter.Get(), &APlayerCharacter::Interact);
+		EnhancedInputComponent->BindAction(TalkAction, ETriggerEvent::Completed, this, &AShifterController::ContinueDialog);
+	}
+	bInputSetup = true;
+}
+
+void AShifterController::ContinueDialog()
+{
+	if (!DialogWidget->NextLine()) {
+	    DialogWidget->SetVisibility(ESlateVisibility::Hidden);
+		SetMappingContext(EMappingContexts::DefaultContext);
 	}
 }
