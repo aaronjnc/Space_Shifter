@@ -60,7 +60,7 @@ class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInter
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TMap<TEnumAsByte<EDialogAction>, IDialogActionInterface*> SentenceDialogActions;
+	TMap<TEnumAsByte<EDialogAction>, TObjectPtr<AActor>> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	FDataTableRowHandle DialogStruct;
 
