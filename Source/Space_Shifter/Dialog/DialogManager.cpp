@@ -19,7 +19,7 @@ void UDialogManager::TriggerDialog(FDialogStruct InitialDialog, UDialogComponent
 
 void UDialogManager::TriggerAction(EDialogAction DialogAction)
 {
-	
+	CurrentComponent->TriggerDialogAction(DialogAction);
 }
 
 

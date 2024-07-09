@@ -22,7 +22,7 @@ UDialogComponent::UDialogComponent()
 void UDialogComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// ...
 	
 }
@@ -49,6 +49,14 @@ EMappingContexts UDialogComponent::StopInteract()
 
 void UDialogComponent::TriggerDialogAction(EDialogAction DialogAction)
 {
-	SentenceDialogActions[DialogAction]->PerformDialogAction();
+	IDialogActionInterface* ActionInterface = Cast<IDialogActionInterface>(SentenceDialogActions[DialogAction]);
+	if (ActionInterface)
+	{
+		ActionInterface->PerformDialogAction();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Fatal, TEXT("Actor %s does not implement IDialogActionInterface."), *SentenceDialogActions[DialogAction]->GetName());
+	}
 }
 

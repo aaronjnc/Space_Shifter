@@ -3,6 +3,7 @@
 
 #include "DialogHUD.h"
 #include "DialogComponent.h"
+#include "DialogManager.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
@@ -33,6 +34,13 @@ void UDialogHUD::BeginConversation(FDialogStruct InitialDialog)
 
 bool UDialogHUD::NextLine()
 {
+	if (CurrentDialog.SentenceDialogEnums.Num() != 0)
+	{
+		for (const EDialogAction DialogAction : CurrentDialog.SentenceDialogEnums)
+		{
+			GetGameInstance()->GetSubsystem<UDialogManager>()->TriggerAction(DialogAction);
+		}
+	}
 	if (CurrentDialog.NextSentence.IsNull())
 	{
 		return false;
