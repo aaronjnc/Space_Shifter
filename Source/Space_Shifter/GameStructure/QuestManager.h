@@ -9,18 +9,27 @@
 static FString DataTableLocation = "/Game/Space_Shifter/Resources/DataTables/DT_Quests";
 
 USTRUCT(BlueprintType)
-struct FQuestStruct : public FTableRowBase
+struct FSceneStruct : public FTableRowBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	FString QuestName;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TSoftObjectPtr<UWorld>> SceneOrder;
+	TSoftObjectPtr<UWorld> QuestScene;
 
 	UPROPERTY(EditAnywhere)
 	UDataTable* DialogDataTable;
+};
+
+USTRUCT(BlueprintType)
+struct FQuestStruct : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere)
+	FString QuestName;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FDataTableRowHandle> SceneOrder;
 };
 
 /**
@@ -35,15 +44,19 @@ private:
 
 	int CurrentQuestNum = 0;
 
-	int CurrentLevelNum = 0;
+	int CurrentSceneNum = 0;
 
-	FQuestStruct* CurrentQuest;
+	FSceneStruct* CurrentScene;
+
+	FQuestStruct* CurrentQuestList;
 	
-	TObjectPtr<UDataTable> QuestDataTable;
+	TObjectPtr<UDataTable> QuestListDataTable;
 
 private:
 
-	FQuestStruct* GetQuest(const int& QuestNum);
+	FQuestStruct* GetQuest(const int& QuestNum) const;
+
+	FSceneStruct* GetScene(const int& SceneNum) const;
 
 protected:
 	
@@ -55,8 +68,8 @@ public:
 
 	void LoadQuest(const int& QuestNum);
 
-	void NextLevel();
+	void NextScene();
 
-	void LoadLevel(const int& LevelNum);
+	void LoadScene(const int& LevelNum);
 	
 };

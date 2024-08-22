@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "MediaSource.h"
+#include "Space_Shifter/GameStructure/QuestManager.h"
 #include "CutsceneManager.generated.h"
 
 
 USTRUCT(BlueprintType)
-struct FCutsceneStruct : public FTableRowBase
+struct FCutsceneStruct : public FSceneStruct
 {
 	GENERATED_BODY()
 
@@ -22,6 +23,10 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACE_SHIFTER_API UCutsceneManager : public UActorComponent
 {
 	GENERATED_BODY()
+
+private:
+
+	
 
 public:	
 	// Sets default values for this component's properties

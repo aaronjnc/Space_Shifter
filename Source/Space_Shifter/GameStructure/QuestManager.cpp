@@ -4,18 +4,23 @@
 #include "QuestManager.h"
 #include "Kismet/GameplayStatics.h"
 
-FQuestStruct* UQuestManager::GetQuest(const int& QuestNum)
+FQuestStruct* UQuestManager::GetQuest(const int& QuestNum) const
 {
 	TArray<FQuestStruct*> AllQuests;
-	QuestDataTable->GetAllRows("", AllQuests);
+	QuestListDataTable->GetAllRows("", AllQuests);
 	return AllQuests[QuestNum];
+}
+
+FSceneStruct* UQuestManager::GetScene(const int& SceneNum) const
+{
+	return CurrentQuestList->SceneOrder[SceneNum].GetRow<FSceneStruct>("");
 }
 
 void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	QuestDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DataTableLocation));
-	if (!QuestDataTable)
+	QuestListDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DataTableLocation));
+	if (!QuestListDataTable)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Unable to load data table"));
 		return;
@@ -31,18 +36,20 @@ void UQuestManager::NextQuest()
 void UQuestManager::LoadQuest(const int& QuestNum)
 {
 	CurrentQuestNum = QuestNum;
-	CurrentQuest = GetQuest(CurrentQuestNum);
+	CurrentQuestList = GetQuest(CurrentQuestNum);
+	CurrentSceneNum = 0;
 	UE_LOG(LogTemp, Warning, TEXT("Load Level"));
-	LoadLevel(0);
+	LoadScene(0);
 }
 
-void UQuestManager::NextLevel()
+void UQuestManager::NextScene()
 {
-	LoadLevel(CurrentLevelNum + 1);
+	LoadScene(CurrentSceneNum + 1);
 }
 
-void UQuestManager::LoadLevel(const int& LevelNum)
+void UQuestManager::LoadScene(const int& LevelNum)
 {
-	CurrentLevelNum = LevelNum;
-	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentQuest->SceneOrder[CurrentLevelNum]);
+	CurrentScene = GetScene(LevelNum);
+	CurrentSceneNum = LevelNum;
+	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentScene->QuestScene);
 }
