@@ -22,7 +22,7 @@ ACutscenePawn::ACutscenePawn()
 void ACutscenePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

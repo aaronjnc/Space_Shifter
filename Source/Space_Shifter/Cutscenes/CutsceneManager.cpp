@@ -2,6 +2,9 @@
 
 
 #include "CutsceneManager.h"
+#include "Space_Shifter/GameStructure/QuestManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "LevelSequenceActor.h"
 
 // Sets default values for this component's properties
 UCutsceneManager::UCutsceneManager()
@@ -9,8 +12,6 @@ UCutsceneManager::UCutsceneManager()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -19,8 +20,11 @@ void UCutsceneManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	ALevelSequenceActor* LevelSequenceActor;
+	FMovieSceneSequencePlaybackSettings PlaybackSettings;
+	LevelSequence = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UQuestManager>()->GetCutscene();
+	SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, PlaybackSettings, LevelSequenceActor);
+	SequencePlayer->PlayLooping();
 }
 
 

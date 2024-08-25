@@ -6,7 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "QuestManager.generated.h"
 
-static FString DataTableLocation = "/Game/Space_Shifter/Resources/DataTables/DT_Quests";
+static FString DataTableLocation = "/Game/Space_Shifter/Resources/DataTables/DT_QuestList";
 
 USTRUCT(BlueprintType)
 struct FSceneStruct : public FTableRowBase
@@ -32,6 +32,9 @@ struct FQuestStruct : public FTableRowBase
 	TArray<FDataTableRowHandle> SceneOrder;
 };
 
+
+struct FCutsceneStruct;
+class ULevelSequence;
 /**
  * 
  */
@@ -48,15 +51,19 @@ private:
 
 	FSceneStruct* CurrentScene;
 
+	FCutsceneStruct* CutsceneStruct;
+
 	FQuestStruct* CurrentQuestList;
 	
 	TObjectPtr<UDataTable> QuestListDataTable;
+
+	bool bIsCutscene = false;
 
 private:
 
 	FQuestStruct* GetQuest(const int& QuestNum) const;
 
-	FSceneStruct* GetScene(const int& SceneNum) const;
+	void UpdateScene(const int& SceneNum);
 
 protected:
 	
@@ -71,5 +78,7 @@ public:
 	void NextScene();
 
 	void LoadScene(const int& LevelNum);
+	
+	ULevelSequence* GetCutscene() const;
 	
 };

@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "MediaSource.h"
+#include "LevelSequence.h"
+#include "LevelSequencePlayer.h"
 #include "Space_Shifter/GameStructure/QuestManager.h"
 #include "CutsceneManager.generated.h"
 
@@ -15,7 +16,7 @@ struct FCutsceneStruct : public FSceneStruct
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	UMediaSource* CutsceneVideo;
+	ULevelSequence* CutsceneVideo;
 };
 
 
@@ -26,7 +27,11 @@ class SPACE_SHIFTER_API UCutsceneManager : public UActorComponent
 
 private:
 
-	
+	UPROPERTY()
+	ULevelSequencePlayer* SequencePlayer;
+
+	UPROPERTY()
+	ULevelSequence* LevelSequence;
 
 public:	
 	// Sets default values for this component's properties
