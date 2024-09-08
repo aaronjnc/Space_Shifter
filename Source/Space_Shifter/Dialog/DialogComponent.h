@@ -28,6 +28,9 @@ struct FCharacterStruct : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<ECharacterName> Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText CharacterName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -38,7 +41,7 @@ USTRUCT(BlueprintType)
 struct FDialogStruct : public FTableRowBase
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TEnumAsByte<ECharacterName> Character;
 

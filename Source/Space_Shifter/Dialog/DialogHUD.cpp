@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
+
 void UDialogHUD::DisplayDialog()
 {
 	FCharacterStruct TalkingCharacter = *CharacterMap[CurrentDialog.Character].GetRow<FCharacterStruct>("");
