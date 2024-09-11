@@ -6,6 +6,7 @@
 #include "DialogManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "DialogActionInterface.h"
+#include "Space_Shifter/GameStructure/QuestManager.h"
 
 // Sets default values for this component's properties
 UDialogComponent::UDialogComponent()
@@ -23,7 +24,7 @@ void UDialogComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// ...
+	CharacterStruct = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UQuestManager>()->GetCharacterStruct(CharacterEnum);
 	
 }
 
@@ -38,7 +39,8 @@ void UDialogComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 EMappingContexts UDialogComponent::Interact()
 {
-	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(*DialogStruct.GetRow<FDialogStruct>(""), this);
+	const FDialogStruct CharacterDialogStruct = *CharacterStruct.CharacterDialogTable->FindRow<FDialogStruct>(CharacterStruct.CharacterDialogTable->GetRowNames()[0],"");
+	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(CharacterStruct, CharacterDialogStruct, this);
 	return EMappingContexts::Dialog;
 }
 

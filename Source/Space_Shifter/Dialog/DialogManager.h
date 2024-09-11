@@ -26,7 +26,7 @@ public:
 
 	void AssignDialogHUD(UDialogHUD* NewHUD);
 
-	void TriggerDialog(FDialogStruct InitialDialog, UDialogComponent* NewComponent);
+	void TriggerDialog(const FCharacterStruct CurrentCharacter, const FDialogStruct InitialDialog, UDialogComponent* NewComponent);
 
-	void TriggerAction(EDialogAction DialogAction);
+	void TriggerAction(const EDialogAction DialogAction) const;
 };

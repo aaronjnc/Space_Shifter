@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Space_Shifter/Dialog/DialogComponent.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "QuestManager.generated.h"
 
@@ -17,7 +18,7 @@ struct FSceneStruct : public FTableRowBase
 	TSoftObjectPtr<UWorld> QuestScene;
 
 	UPROPERTY(EditAnywhere)
-	UDataTable* DialogDataTable;
+	UDataTable* CharacterDataTable;
 };
 
 USTRUCT(BlueprintType)
@@ -59,11 +60,15 @@ private:
 
 	bool bIsCutscene = false;
 
+	TMap<ECharacterName, FCharacterStruct> CharacterStructs;
+
 private:
 
 	FQuestStruct* GetQuest(const int& QuestNum) const;
 
 	void UpdateScene(const int& SceneNum);
+
+	void UpdateCharacters();
 
 protected:
 	
@@ -80,5 +85,7 @@ public:
 	void LoadScene(const int& LevelNum);
 	
 	ULevelSequence* GetCutscene() const;
+
+	FCharacterStruct GetCharacterStruct(const ECharacterName CharacterName);
 	
 };

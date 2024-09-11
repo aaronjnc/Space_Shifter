@@ -23,6 +23,17 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 	}
 }
 
+void UQuestManager::UpdateCharacters()
+{
+	CharacterStructs.Empty();
+	const UDataTable* CharacterTable = CurrentScene->CharacterDataTable;
+	for (const FName CharacterName : CharacterTable->GetRowNames())
+	{
+		const FCharacterStruct* CharacterStruct = CharacterTable->FindRow<FCharacterStruct>(CharacterName, "");
+		CharacterStructs.Add(CharacterStruct->Character, *CharacterStruct);
+	}
+}
+
 void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -63,4 +74,9 @@ void UQuestManager::LoadScene(const int& LevelNum)
 ULevelSequence* UQuestManager::GetCutscene() const
 {
 	return CutsceneStruct->CutsceneVideo;
+}
+
+FCharacterStruct UQuestManager::GetCharacterStruct(const ECharacterName CharacterName)
+{
+	return CharacterStructs[CharacterName];
 }
