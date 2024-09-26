@@ -28,10 +28,16 @@ struct FCharacterStruct : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<ECharacterName> Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText CharacterName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* CharacterPortrait;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* CharacterDialogTable;
 };
 
 USTRUCT(BlueprintType)
@@ -62,7 +68,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<EDialogAction>, TObjectPtr<AActor>> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	FDataTableRowHandle DialogStruct;
+	TEnumAsByte<ECharacterName> CharacterEnum;
+	FCharacterStruct CharacterStruct;
 
 public:	
 	// Sets default values for this component's properties

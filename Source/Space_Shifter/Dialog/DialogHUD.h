@@ -37,11 +37,13 @@ private:
 
 	FDialogStruct CurrentDialog;
 
+	FCharacterStruct CurrentCharacter;
+
 public:
 
-	void DisplayDialog();
+	void DisplayDialog() const;
 
-	void BeginConversation(FDialogStruct InitialDialog);
+	void BeginConversation(const FCharacterStruct NewCharacter, const FDialogStruct InitialDialog);
 
 	bool NextLine();
 	

@@ -7,27 +7,28 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-void UDialogHUD::DisplayDialog()
+
+void UDialogHUD::DisplayDialog() const
 {
-	FCharacterStruct TalkingCharacter = *CharacterMap[CurrentDialog.Character].GetRow<FCharacterStruct>("");
-	if (CurrentDialog.Character == ECharacterName::Player)
+	if (CurrentCharacter.Character == ECharacterName::Player)
 	{
 		PlayerPicture->SetVisibility(ESlateVisibility::Visible);
 		NPCPicture->SetVisibility(ESlateVisibility::Hidden);
-		PlayerPicture->SetBrushFromTexture(TalkingCharacter.CharacterPortrait);
+		PlayerPicture->SetBrushFromTexture(CurrentCharacter.CharacterPortrait);
 	}
 	else
 	{
 		NPCPicture->SetVisibility(ESlateVisibility::Visible);
 		PlayerPicture->SetVisibility(ESlateVisibility::Hidden);
-		NPCPicture->SetBrushFromTexture(TalkingCharacter.CharacterPortrait);
+		NPCPicture->SetBrushFromTexture(CurrentCharacter.CharacterPortrait);
 	}
-	NameTextBox->SetText(TalkingCharacter.CharacterName);
+	NameTextBox->SetText(CurrentCharacter.CharacterName);
 	DialogTextBox->SetText(CurrentDialog.Sentence);
 }
 
-void UDialogHUD::BeginConversation(FDialogStruct InitialDialog)
+void UDialogHUD::BeginConversation(const FCharacterStruct NewCharacter, const FDialogStruct InitialDialog)
 {
+	CurrentCharacter = NewCharacter;
 	CurrentDialog = InitialDialog;
 	DisplayDialog();
 }
