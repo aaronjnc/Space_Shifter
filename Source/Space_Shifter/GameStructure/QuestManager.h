@@ -18,7 +18,7 @@ struct FSceneStruct : public FTableRowBase
 	TSoftObjectPtr<UWorld> QuestScene;
 
 	UPROPERTY(EditAnywhere)
-	UDataTable* CharacterDataTable;
+	TArray<FDataTableRowHandle> SceneCharacters;
 };
 
 USTRUCT(BlueprintType)

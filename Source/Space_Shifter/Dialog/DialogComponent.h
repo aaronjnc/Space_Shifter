@@ -46,6 +46,9 @@ struct FDialogStruct : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<ECharacterName> Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TEnumAsByte<EDialogAction>> SentenceDialogEnums;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -26,10 +26,9 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 void UQuestManager::UpdateCharacters()
 {
 	CharacterStructs.Empty();
-	const UDataTable* CharacterTable = CurrentScene->CharacterDataTable;
-	for (const FName CharacterName : CharacterTable->GetRowNames())
+	for (const FDataTableRowHandle Character : CurrentScene->SceneCharacters)
 	{
-		const FCharacterStruct* CharacterStruct = CharacterTable->FindRow<FCharacterStruct>(CharacterName, "");
+		const FCharacterStruct* CharacterStruct = Character.GetRow<FCharacterStruct>("");
 		CharacterStructs.Add(CharacterStruct->Character, *CharacterStruct);
 	}
 }
@@ -37,12 +36,14 @@ void UQuestManager::UpdateCharacters()
 void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	UE_LOG(LogTemp, Warning, TEXT("Initialized"));
 	QuestListDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DataTableLocation));
 	if (!QuestListDataTable)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Unable to load data table at %s"), *DataTableLocation);
 		return;
 	}
+	LoadQuest(0);
 }
 
 void UQuestManager::NextQuest()
@@ -69,6 +70,7 @@ void UQuestManager::LoadScene(const int& LevelNum)
 	UpdateScene(LevelNum);
 	CurrentSceneNum = LevelNum;
 	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentScene->QuestScene);
+	UpdateCharacters();
 }
 
 ULevelSequence* UQuestManager::GetCutscene() const
@@ -78,5 +80,10 @@ ULevelSequence* UQuestManager::GetCutscene() const
 
 FCharacterStruct UQuestManager::GetCharacterStruct(const ECharacterName CharacterName)
 {
-	return CharacterStructs[CharacterName];
+	if (CharacterStructs.Contains(CharacterName))
+	{
+		return CharacterStructs[CharacterName];
+	}
+	UE_LOG(LogTemp, Error, TEXT("Character Invalid: %s"), *UEnum::GetValueAsString(CharacterName));
+	return FCharacterStruct();
 }
