@@ -6,6 +6,9 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interactables/Interactable.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Player/Grabber.h"
 #include "Player/Portal.h"
 
 // Sets default values
@@ -20,6 +23,11 @@ APlayerCharacter::APlayerCharacter()
 	PortalComponent = CreateDefaultSubobject<UPortal>("Portal Component");
 	PortalComponent->SetupAttachment(RootComponent);
 
+	GrabberComponent = CreateDefaultSubobject<UGrabber>("Grabber Component");
+	GrabberComponent->SetupAttachment(CameraComponent);
+
+	PhysicsHandleComponent = CreateDefaultSubobject<UPhysicsHandleComponent>("Physics Handle");
+	
 	bInTheFuture = true;
 }
 
@@ -27,7 +35,9 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerController = Cast<AShifterController>(GetController());
 	TArray<AActor*> PlayerStarts;
+	InteractObject = TScriptInterface<IInteractableInterface>();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
 	for (const AActor* PlayerStart : PlayerStarts)
 	{
@@ -48,6 +58,29 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bIsInteracting)
+	{
+		return;
+	}
+
+	FHitResult HitResult;
+	const FVector& CameraLoc = GetCameraComponent()->GetComponentLocation();
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLoc, CameraLoc + CameraComponent->GetForwardVector() * InteractDistance, ECC_GameTraceChannel2))
+	{
+		if (HitResult.GetActor()->GetClass()->ImplementsInterface(UInteractableInterface::StaticClass()))
+		{
+			InteractObject.SetObject(HitResult.GetActor());
+			InteractObject.SetInterface(Cast<IInteractableInterface>(HitResult.GetActor()));
+		}
+		else
+		{
+			InteractObject = nullptr;
+		}
+	}
+	else
+	{
+		InteractObject = nullptr;
+	}
 	if (bPortalActive)
 	{
 		UpdateCaptureLocation();
@@ -75,6 +108,38 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 	AddControllerYawInput(LookDir.X);
 	AddControllerPitchInput(LookDir.Y);
+}
+
+void APlayerCharacter::Interact()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+	if (GrabberComponent->GetIsGrabbing())
+	{
+		GrabberComponent->Release();
+	}
+	if (!InteractObject)
+	{
+		return;
+	}
+	EMappingContexts NewContext;
+	AInteractable* InteractActor = Cast<AInteractable>(InteractObject.GetObject());
+	if (InteractActor && InteractActor->Tags.Contains("Grabbable"))
+	{
+		GrabberComponent->Grab(InteractActor);
+	}
+	else if (!bIsInteracting)
+	{
+		bIsInteracting = true;
+		NewContext = InteractObject.GetInterface()->Interact();
+		PlayerController->SetMappingContext(NewContext);
+	}
+	else
+	{
+		NewContext = InteractObject.GetInterface()->StopInteract();
+		bIsInteracting = false;
+		PlayerController->SetMappingContext(NewContext);
+	}
+	
 }
 
 void APlayerCharacter::ShiftTime()

@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interactables/InteractableInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
 class UPortal;
+class UGrabber;
+class AInteractable;
+class UPhysicsHandleComponent;
 struct FInputActionValue;
+
 UCLASS()
 class SPACE_SHIFTER_API APlayerCharacter : public ACharacter
 {
@@ -22,11 +27,20 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UPortal> PortalComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UGrabber> GrabberComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UPhysicsHandleComponent> PhysicsHandleComponent;
+
 	UPROPERTY(EditAnywhere, Category = "Shifting")
 	FName FutureStartTag;
 
 	UPROPERTY(EditAnywhere, Category = "Shifting")
 	FName PastStartTag;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	float InteractDistance;
 
 	FVector FutureStartPosition;
 
@@ -35,6 +49,12 @@ private:
 	bool bInTheFuture;
 
 	bool bPortalActive;
+
+	bool bIsInteracting;
+
+	TScriptInterface<IInteractableInterface> InteractObject;
+
+	AShifterController* PlayerController;
 
 public:
 	// Sets default values for this character's properties
@@ -54,6 +74,8 @@ public:
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+	
+	void Interact();
 
 	void ShiftTime();
 

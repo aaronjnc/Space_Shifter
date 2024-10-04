@@ -125,8 +125,6 @@ void UPortal::BeginPlay()
 	ShifterController = Cast<AShifterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	DynamicMaterial = CreateDynamicMaterialInstance(0, ParentMaterial);
-
-	//SetupCaptureSettings();
 	
 	SetMaterial(0, DynamicMaterial);
 
