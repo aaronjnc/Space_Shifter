@@ -43,7 +43,6 @@ void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
 		UE_LOG(LogTemp, Error, TEXT("Unable to load data table at %s"), *DataTableLocation);
 		return;
 	}
-	LoadQuest(0);
 }
 
 void UQuestManager::NextQuest()
