@@ -4,6 +4,7 @@
 #include "QuestManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Space_Shifter/Cutscenes/CutsceneManager.h"
+#include "Space_Shifter/SupporterClass.h"
 
 FQuestStruct* UQuestManager::GetQuest(const int& QuestNum) const
 {
@@ -15,8 +16,8 @@ FQuestStruct* UQuestManager::GetQuest(const int& QuestNum) const
 void UQuestManager::UpdateScene(const int& SceneNum)
 {
 	bIsCutscene = true;
-	CutsceneStruct = CurrentQuestList->SceneOrder[SceneNum].GetRow<FCutsceneStruct>("");
-	CurrentScene = CurrentQuestList->SceneOrder[SceneNum].GetRow<FSceneStruct>("");
+	//CutsceneStruct = CurrentQuestList->SceneList[SceneNum].GetRow<FCutsceneStruct>("");
+	CurrentScene = CurrentQuestList->SceneList[SceneNum].GetRow<FSceneStruct>("");
 	if (!CutsceneStruct)
 	{
 		bIsCutscene = false;
@@ -26,11 +27,7 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 void UQuestManager::UpdateCharacters()
 {
 	CharacterStructs.Empty();
-	for (const FDataTableRowHandle Character : CurrentScene->SceneCharacters)
-	{
-		const FCharacterStruct* CharacterStruct = Character.GetRow<FCharacterStruct>("");
-		CharacterStructs.Add(CharacterStruct->Character, *CharacterStruct);
-	}
+	
 }
 
 void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -68,7 +65,7 @@ void UQuestManager::LoadScene(const int& LevelNum)
 {
 	UpdateScene(LevelNum);
 	CurrentSceneNum = LevelNum;
-	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentScene->QuestScene);
+	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentScene->Level);
 	UpdateCharacters();
 }
 
@@ -81,7 +78,7 @@ FCharacterStruct UQuestManager::GetCharacterStruct(const ECharacterName Characte
 {
 	if (CharacterStructs.Contains(CharacterName))
 	{
-		return CharacterStructs[CharacterName];
+		return *CharacterStructs[CharacterName];
 	}
 	UE_LOG(LogTemp, Error, TEXT("Character Invalid: %s"), *UEnum::GetValueAsString(CharacterName));
 	return FCharacterStruct();

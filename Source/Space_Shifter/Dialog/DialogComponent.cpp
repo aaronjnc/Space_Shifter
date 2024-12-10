@@ -24,8 +24,6 @@ void UDialogComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CharacterStruct = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UQuestManager>()->GetCharacterStruct(CharacterEnum);
-	
 }
 
 
@@ -39,8 +37,7 @@ void UDialogComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 EMappingContexts UDialogComponent::Interact()
 {
-	const FDialogStruct CharacterDialogStruct = *CharacterStruct.CharacterDialogTable->FindRow<FDialogStruct>(CharacterStruct.CharacterDialogTable->GetRowNames()[0],"");
-	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(CharacterStruct, CharacterDialogStruct, this);
+	UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDialogManager>()->TriggerDialog(CharacterStruct, DialogTree, this);
 	return EMappingContexts::Dialog;
 }
 
@@ -49,7 +46,7 @@ EMappingContexts UDialogComponent::StopInteract()
 	return EMappingContexts::DefaultContext;
 }
 
-void UDialogComponent::TriggerDialogAction(EDialogAction DialogAction)
+void UDialogComponent::TriggerDialogAction(ELevelAction DialogAction)
 {
 	IDialogActionInterface* ActionInterface = Cast<IDialogActionInterface>(SentenceDialogActions[DialogAction]);
 	if (ActionInterface)

@@ -3,60 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DialogActionInterface.h"
 #include "Components/ActorComponent.h"
 #include "Space_Shifter/Interactables/InteractableInterface.h"
+#include "Space_Shifter/SupporterClass.h"
 #include "DialogComponent.generated.h"
-
-UENUM(BlueprintType)
-enum EDialogAction
-{
-	DefaultAction,
-	Destroy,
-};
-
-UENUM(BlueprintType)
-enum ECharacterName
-{
-	Player,
-	Dave,
-};
-
-USTRUCT(BlueprintType)
-struct FCharacterStruct : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<ECharacterName> Character;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText CharacterName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* CharacterPortrait;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* CharacterDialogTable;
-};
-
-USTRUCT(BlueprintType)
-struct FDialogStruct : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<ECharacterName> Character;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TEnumAsByte<EDialogAction>> SentenceDialogEnums;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Sentence;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDataTableRowHandle NextSentence;
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInteractableInterface
@@ -66,10 +16,12 @@ class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInter
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TMap<TEnumAsByte<EDialogAction>, TObjectPtr<AActor>> SentenceDialogActions;
+	TMap<TEnumAsByte<ELevelAction>, TObjectPtr<AActor>> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
-	TEnumAsByte<ECharacterName> CharacterEnum;
-	FCharacterStruct CharacterStruct;
+	TEnumAsByte<enum ECharacterName> CharacterEnum;
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	UDataTable* DialogTree;
+	FCharacterStruct* CharacterStruct;
 
 public:	
 	// Sets default values for this component's properties
@@ -87,6 +39,6 @@ public:
 
 	virtual EMappingContexts StopInteract() override;
 
-	void TriggerDialogAction(EDialogAction DialogAction);
+	void TriggerDialogAction(ELevelAction DialogAction);
 	
 };

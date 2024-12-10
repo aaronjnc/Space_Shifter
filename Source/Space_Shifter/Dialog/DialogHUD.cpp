@@ -2,40 +2,38 @@
 
 
 #include "DialogHUD.h"
-#include "DialogComponent.h"
-#include "DialogManager.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-
+#include "Space_Shifter/SupporterClass.h"
 
 void UDialogHUD::DisplayDialog() const
 {
-	if (CurrentCharacter.Character == ECharacterName::Player)
+	if (CurrentCharacter->CharacterName == ECharacterName::Player)
 	{
 		PlayerPicture->SetVisibility(ESlateVisibility::Visible);
 		NPCPicture->SetVisibility(ESlateVisibility::Hidden);
-		PlayerPicture->SetBrushFromTexture(CurrentCharacter.CharacterPortrait);
+		PlayerPicture->SetBrushFromTexture(CurrentCharacter->CharacterProfile);
 	}
 	else
 	{
 		NPCPicture->SetVisibility(ESlateVisibility::Visible);
 		PlayerPicture->SetVisibility(ESlateVisibility::Hidden);
-		NPCPicture->SetBrushFromTexture(CurrentCharacter.CharacterPortrait);
+		NPCPicture->SetBrushFromTexture(CurrentCharacter->CharacterProfile);
 	}
-	NameTextBox->SetText(CurrentCharacter.CharacterName);
-	DialogTextBox->SetText(CurrentDialog.Sentence);
+	NameTextBox->SetText(FText::FromString(CurrentCharacter->CharacterNameString));
+	DialogTextBox->SetText(CurrentDialog->Text);
 }
 
-void UDialogHUD::BeginConversation(const FCharacterStruct NewCharacter, const FDialogStruct InitialDialog)
+void UDialogHUD::BeginConversation(FCharacterStruct* NewCharacter, UDataTable* NewDialogTree)
 {
 	CurrentCharacter = NewCharacter;
-	CurrentDialog = InitialDialog;
+	DialogTree = NewDialogTree;
 	DisplayDialog();
 }
 
 bool UDialogHUD::NextLine()
 {
-	if (CurrentDialog.SentenceDialogEnums.Num() != 0)
+	/*if (CurrentDialog->SentenceDialogEnums.Num() != 0)
 	{
 		for (const EDialogAction DialogAction : CurrentDialog.SentenceDialogEnums)
 		{
@@ -47,6 +45,6 @@ bool UDialogHUD::NextLine()
 		return false;
 	}
 	CurrentDialog = *CurrentDialog.NextSentence.GetRow<FDialogStruct>("");
-	DisplayDialog();
+	DisplayDialog();*/
 	return true;
 }

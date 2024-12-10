@@ -9,32 +9,10 @@
 
 static FString DataTableLocation = "/Game/Space_Shifter/Resources/DataTables/DT_QuestList";
 
-USTRUCT(BlueprintType)
-struct FSceneStruct : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	TSoftObjectPtr<UWorld> QuestScene;
-
-	UPROPERTY(EditAnywhere)
-	TArray<FDataTableRowHandle> SceneCharacters;
-};
-
-USTRUCT(BlueprintType)
-struct FQuestStruct : public FTableRowBase
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere)
-	FString QuestName;
-
-	UPROPERTY(EditAnywhere)
-	TArray<FDataTableRowHandle> SceneOrder;
-};
-
-
 struct FCutsceneStruct;
+struct FSceneStruct;
+struct FQuestStruct;
+struct FCharacterStruct;
 class ULevelSequence;
 /**
  * 
@@ -60,7 +38,7 @@ private:
 
 	bool bIsCutscene = false;
 
-	TMap<ECharacterName, FCharacterStruct> CharacterStructs;
+	TMap<ECharacterName, FCharacterStruct*> CharacterStructs;
 
 private:
 

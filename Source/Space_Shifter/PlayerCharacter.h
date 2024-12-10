@@ -54,6 +54,7 @@ private:
 
 	TScriptInterface<IInteractableInterface> InteractObject;
 
+	UPROPERTY()
 	AShifterController* PlayerController;
 
 public:

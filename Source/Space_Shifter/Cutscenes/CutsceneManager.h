@@ -10,16 +10,6 @@
 #include "CutsceneManager.generated.h"
 
 
-USTRUCT(BlueprintType)
-struct FCutsceneStruct : public FSceneStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	ULevelSequence* CutsceneVideo;
-};
-
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACE_SHIFTER_API UCutsceneManager : public UActorComponent
 {

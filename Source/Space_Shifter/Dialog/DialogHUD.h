@@ -12,7 +12,9 @@
  */
 class UImage;
 class UTextBlock;
-struct FDialogStruct;
+struct FDialogLine;
+struct FCharacterStruct;
+enum ECharacterName;
 UCLASS()
 class SPACE_SHIFTER_API UDialogHUD : public UUserWidget
 {
@@ -35,15 +37,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<ECharacterName>, FDataTableRowHandle> CharacterMap;
 
-	FDialogStruct CurrentDialog;
+	UDataTable* DialogTree;
 
-	FCharacterStruct CurrentCharacter;
+	TArray<FDialogLine*> DialogOptions;
+
+	FDialogLine* CurrentDialog;
+
+	FCharacterStruct* CurrentCharacter;
 
 public:
 
 	void DisplayDialog() const;
 
-	void BeginConversation(const FCharacterStruct NewCharacter, const FDialogStruct InitialDialog);
+	void BeginConversation(FCharacterStruct* NewCharacter, UDataTable* NewDialogTree);
 
 	bool NextLine();
 	

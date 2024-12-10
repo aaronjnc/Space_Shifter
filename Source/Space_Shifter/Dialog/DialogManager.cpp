@@ -10,14 +10,14 @@ void UDialogManager::AssignDialogHUD(UDialogHUD* NewHUD)
 	DialogHUD = NewHUD;
 }
 
-void UDialogManager::TriggerDialog(const FCharacterStruct CurrentCharacter, const FDialogStruct InitialDialog, UDialogComponent* NewComponent)
+void UDialogManager::TriggerDialog(FCharacterStruct* CurrentCharacter, UDataTable* DialogTree, UDialogComponent* NewComponent)
 {
-	DialogHUD->BeginConversation(CurrentCharacter, InitialDialog);
+	DialogHUD->BeginConversation(CurrentCharacter, DialogTree);
 	DialogHUD->SetVisibility(ESlateVisibility::Visible);
 	CurrentComponent = NewComponent;
 }
 
-void UDialogManager::TriggerAction(const EDialogAction DialogAction) const
+void UDialogManager::TriggerAction(const ELevelAction DialogAction) const
 {
 	CurrentComponent->TriggerDialogAction(DialogAction);
 }

@@ -20,7 +20,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* PortalImage;
-	
+
+	UPROPERTY()
 	UTextureRenderTarget2D* TextureRenderTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Rendering")
@@ -29,6 +30,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Rendering")
 	UMaterial* ParentMaterial;
 
+	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial;
 
 public:

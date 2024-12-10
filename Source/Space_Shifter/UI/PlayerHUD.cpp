@@ -3,10 +3,8 @@
 
 #include "PlayerHUD.h"
 #include "Space_Shifter/PlayerCharacter.h"
-#include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 void UPlayerHUD::GeneratePortalTexture()
 {
