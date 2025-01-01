@@ -2,13 +2,13 @@
 
 
 #include "ShifterGamemode.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 
 void AShifterGamemode::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 AActor* AShifterGamemode::ChoosePlayerStart_Implementation(AController* Player)

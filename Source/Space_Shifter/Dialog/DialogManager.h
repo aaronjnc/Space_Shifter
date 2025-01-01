@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DialogComponent.h"
+#include "Space_Shifter/SupporterClass.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DialogManager.generated.h"
 
@@ -26,7 +27,7 @@ public:
 
 	void AssignDialogHUD(UDialogHUD* NewHUD);
 
-	void TriggerDialog(FDialogStruct InitialDialog, UDialogComponent* NewComponent);
+	void TriggerDialog(FCharacterStruct* CurrentCharacter, UDataTable* DialogTree, UDialogComponent* NewComponent);
 
-	void TriggerAction(EDialogAction DialogAction);
+	void TriggerAction(const ELevelAction DialogAction) const;
 };

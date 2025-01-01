@@ -8,7 +8,11 @@ public class Space_Shifter : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "MediaAssets", "CinematicCamera", "ImagePlate", "LevelSequence", "MovieScene",
+			"EditorSubsystem"
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
