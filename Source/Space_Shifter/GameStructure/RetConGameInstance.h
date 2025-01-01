@@ -20,6 +20,8 @@ private:
 	UPROPERTY()
 	UMainMenu* MainMenu;
 
+	
+
 public:
 
 	void SetupMainMenu(TSubclassOf<UMainMenu> MainMenuClass);

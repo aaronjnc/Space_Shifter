@@ -12,6 +12,7 @@
  */
 class UImage;
 class UTextBlock;
+class UDialogComponent;
 struct FDialogLine;
 struct FCharacterStruct;
 enum ECharacterName;
@@ -30,18 +31,21 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* NameTextBox;
-
+	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DialogTextBox;
+	TArray<UTextBlock*> DialogTextBoxes;
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<ECharacterName>, FDataTableRowHandle> CharacterMap;
 
-	UDataTable* DialogTree;
+	UPROPERTY()
+	UDialogComponent* DialogComponent;
 
 	TArray<FDialogLine*> DialogOptions;
 
-	FDialogLine* CurrentDialog;
+	TArray<const FDialogLine*> LineOptions;
+
+	int CurrentDialog = 0;
 
 	FCharacterStruct* CurrentCharacter;
 
@@ -49,7 +53,7 @@ public:
 
 	void DisplayDialog() const;
 
-	void BeginConversation(FCharacterStruct* NewCharacter, UDataTable* NewDialogTree);
+	void BeginConversation(FCharacterStruct* NewCharacter, UDialogComponent* NewDialogComponent);
 
 	bool NextLine();
 	

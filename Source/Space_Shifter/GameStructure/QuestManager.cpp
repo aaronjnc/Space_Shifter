@@ -22,6 +22,10 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 	{
 		bIsCutscene = false;
 	}
+	for (EKnowledge KnowledgeEnums : TEnumRange<EKnowledge>())
+	{
+		KnowledgeMap.Add(KnowledgeEnums);
+	}
 }
 
 void UQuestManager::UpdateCharacters()
@@ -40,6 +44,16 @@ void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
 		UE_LOG(LogTemp, Error, TEXT("Unable to load data table at %s"), *DataTableLocation);
 		return;
 	}
+}
+
+bool UQuestManager::HasKnowledge(const EKnowledge KnowledgeCheck)
+{
+	return KnowledgeMap[KnowledgeCheck];
+}
+
+void UQuestManager::GetKnowledge(const EKnowledge NewKnowledge)
+{
+	KnowledgeMap[NewKnowledge] = true;
 }
 
 void UQuestManager::NextQuest()

@@ -27,10 +27,25 @@ enum EScene
 };
 
 UENUM(BlueprintType)
+enum ELineGroup
+{
+	General,
+	One,
+	Two,
+	Three,
+	Four,
+	NextLine_Max UMETA(Hidden)
+};
+ENUM_RANGE_BY_COUNT(ELineGroup, ELineGroup::NextLine_Max);
+
+
+UENUM(BlueprintType)
 enum EKnowledge
 {
 	KnowledgeDefault,
+	Knowledge_Max UMETA(Hidden)
 };
+ENUM_RANGE_BY_COUNT(EKnowledge, EKnowledge::Knowledge_Max);
 
 UENUM(BlueprintType)
 enum ECutsceneTag
@@ -66,6 +81,9 @@ struct FDialogLine : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ELineGroup> LineGroup;
+
+	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<EKnowledge>> Prerequisites;
 
 	UPROPERTY(EditAnywhere)
@@ -81,10 +99,16 @@ struct FDialogLine : public FTableRowBase
 	TArray<TEnumAsByte<ELevelAction>> LevelActionResults;
 
 	UPROPERTY(EditAnywhere)
-	TArray<TEnumAsByte<EScene>> SceneChangeResults;
+	TEnumAsByte<EScene> SceneChangeResult;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TEnumAsByte<EKnowledge>> KnowledgeResults;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ELineGroup> NextLineGroup;
+
+	UPROPERTY(EditAnywhere)
+	bool bLeave;
 };
 
 USTRUCT(BlueprintType)

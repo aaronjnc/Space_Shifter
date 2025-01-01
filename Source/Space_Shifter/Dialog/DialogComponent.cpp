@@ -23,7 +23,17 @@ UDialogComponent::UDialogComponent()
 void UDialogComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	QuestManager = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UQuestManager>();
+	for (const TPair<FName, uint8*> RowItr : DialogTree->GetRowMap())
+	{
+		const FDialogLine* DialogLine = reinterpret_cast<const FDialogLine*>(RowItr.Value);
+		if (!LineGroupLinks.Contains(DialogLine->LineGroup))
+		{
+			LineGroupLinks.Add(DialogLine->LineGroup, TArray<const FDialogLine*>());
+		}
+		LineGroupLinks[DialogLine->LineGroup].Add(DialogLine);
+	}
 }
 
 
@@ -57,5 +67,43 @@ void UDialogComponent::TriggerDialogAction(ELevelAction DialogAction)
 	{
 		UE_LOG(LogTemp, Fatal, TEXT("Actor %s does not implement IDialogActionInterface."), *SentenceDialogActions[DialogAction]->GetName());
 	}
+}
+
+TArray<const FDialogLine*> UDialogComponent::GetLineGroup(ELineGroup NewLineGroup)
+{
+	return LineGroupLinks[NewLineGroup];
+}
+
+TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialogLine*> DialogLines)
+{
+	TArray<const FDialogLine*> ViableLines;
+	for (int i = 0; i < DialogLines.Num(); i++)
+	{
+		bool bValid = true;
+		for (EKnowledge Prereq : DialogLines[i]->Prerequisites)
+		{
+			if (!QuestManager->HasKnowledge(Prereq))
+			{
+				bValid = false;
+				break;
+			}
+		}
+		if (bValid)
+		{
+			for (EKnowledge Disq : DialogLines[i]->Disqualifiers)
+			{
+				if (QuestManager->HasKnowledge(Disq))
+				{
+					bValid = false;
+					break;
+				}
+			}
+		}
+		if (bValid)
+		{
+			ViableLines.Add(DialogLines[i]);
+		}
+	}
+	return ViableLines;
 }
 

@@ -40,6 +40,8 @@ private:
 
 	TMap<ECharacterName, FCharacterStruct*> CharacterStructs;
 
+	TMap<EKnowledge, bool> KnowledgeMap;
+
 private:
 
 	FQuestStruct* GetQuest(const int& QuestNum) const;
@@ -53,6 +55,10 @@ protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 public:
+
+	bool HasKnowledge(const EKnowledge KnowledgeCheck);
+
+	void GetKnowledge(const EKnowledge NewKnowledge);
 
 	void NextQuest();
 

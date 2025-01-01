@@ -12,7 +12,7 @@ void UDialogManager::AssignDialogHUD(UDialogHUD* NewHUD)
 
 void UDialogManager::TriggerDialog(FCharacterStruct* CurrentCharacter, UDataTable* DialogTree, UDialogComponent* NewComponent)
 {
-	DialogHUD->BeginConversation(CurrentCharacter, DialogTree);
+	DialogHUD->BeginConversation(CurrentCharacter, NewComponent);
 	DialogHUD->SetVisibility(ESlateVisibility::Visible);
 	CurrentComponent = NewComponent;
 }

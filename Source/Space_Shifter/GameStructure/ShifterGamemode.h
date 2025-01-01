@@ -9,6 +9,7 @@
 /**
  * 
  */
+enum EScene;
 UCLASS()
 class SPACE_SHIFTER_API AShifterGamemode : public AGameModeBase
 {
@@ -19,10 +20,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	FName PlayerStartTag;
 
+	UPROPERTY(EditAnywhere, Category = "Scenes")
+	TMap<TEnumAsByte<EScene>, TSoftObjectPtr<UWorld>> SceneMapping;
+
 protected:
 
 	virtual void BeginPlay() override;
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+public:
+
+	void ChangeScene(const TEnumAsByte<EScene> NewScene);
 	
 };
