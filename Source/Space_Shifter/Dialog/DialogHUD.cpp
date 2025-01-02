@@ -26,9 +26,22 @@ void UDialogHUD::DisplayDialog() const
 		NPCPicture->SetBrushFromTexture(CurrentCharacter->CharacterProfile);
 	}
 	NameTextBox->SetText(FText::FromString(CurrentCharacter->CharacterNameString));
-	int i = 0;
-	for (UTextBlock* TextBlock : DialogTextBoxes)
+	for (int i = 0; i < 3; i++)
 	{
+		UTextBlock* TextBlock;
+		switch (i)
+		{
+			default:
+			case 0:
+				TextBlock = DialogTextBox1;
+				break;
+			case 1:
+				TextBlock = DialogTextBox2;
+				break;
+			case 2:
+				TextBlock = DialogTextBox3;
+				break;
+		}
 		if (LineOptions.Num() > i)
 		{
 			TextBlock->SetText(LineOptions[i]->Text);

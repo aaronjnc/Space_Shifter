@@ -74,15 +74,15 @@ TArray<const FDialogLine*> UDialogComponent::GetLineGroup(ELineGroup NewLineGrou
 	return LineGroupLinks[NewLineGroup];
 }
 
-TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialogLine*> DialogLines)
+TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialogLine*> DialogLines) const
 {
 	TArray<const FDialogLine*> ViableLines;
 	for (int i = 0; i < DialogLines.Num(); i++)
 	{
 		bool bValid = true;
-		for (EKnowledge Prereq : DialogLines[i]->Prerequisites)
+		for (const EKnowledge Prerequisite : DialogLines[i]->Prerequisites)
 		{
-			if (!QuestManager->HasKnowledge(Prereq))
+			if (!QuestManager->HasKnowledge(Prerequisite))
 			{
 				bValid = false;
 				break;
@@ -90,9 +90,9 @@ TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialog
 		}
 		if (bValid)
 		{
-			for (EKnowledge Disq : DialogLines[i]->Disqualifiers)
+			for (const EKnowledge Disqualify : DialogLines[i]->Disqualifiers)
 			{
-				if (QuestManager->HasKnowledge(Disq))
+				if (QuestManager->HasKnowledge(Disqualify))
 				{
 					bValid = false;
 					break;
@@ -104,6 +104,7 @@ TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialog
 			ViableLines.Add(DialogLines[i]);
 		}
 	}
+	ensure(DialogLines.Num() <= 3);
 	return ViableLines;
 }
 

@@ -33,7 +33,13 @@ private:
 	UTextBlock* NameTextBox;
 	
 	UPROPERTY(meta = (BindWidget))
-	TArray<UTextBlock*> DialogTextBoxes;
+	UTextBlock* DialogTextBox1;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogTextBox2;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogTextBox3;
 
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TMap<TEnumAsByte<ECharacterName>, FDataTableRowHandle> CharacterMap;

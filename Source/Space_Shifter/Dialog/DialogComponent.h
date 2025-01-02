@@ -48,6 +48,6 @@ public:
 
 	TArray<const FDialogLine*> GetLineGroup(ELineGroup NewLineGroup);
 
-	TArray<const FDialogLine*> GetViableLines(TArray<const FDialogLine*> DialogLines);
+	TArray<const FDialogLine*> GetViableLines(TArray<const FDialogLine*> DialogLines) const;
 	
 };
