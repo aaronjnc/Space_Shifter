@@ -8,6 +8,8 @@
 #include "Space_Shifter/SupporterClass.h"
 #include "DialogComponent.generated.h"
 
+class UQuestManager;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACE_SHIFTER_API UDialogComponent : public UActorComponent, public IInteractableInterface
 {
@@ -19,9 +21,12 @@ private:
 	TMap<TEnumAsByte<ELevelAction>, TObjectPtr<AActor>> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TEnumAsByte<enum ECharacterName> CharacterEnum;
-	UPROPERTY(EditAnywhere, Category = "Dialog")
+	UPROPERTY(EditAnywhere, Category = "Dialog", meta=(RequiredAssetDataTags = "RowStructure=/Script/Space_Shifter.DialogLine"))
 	UDataTable* DialogTree;
 	FCharacterStruct* CharacterStruct;
+	TMap<TEnumAsByte<ECharacterName>, TMap<TEnumAsByte<ELineGroup>, TArray<const FDialogLine*>>> LineGroupLinks;
+	UPROPERTY()
+	UQuestManager* QuestManager;
 
 public:	
 	// Sets default values for this component's properties
@@ -40,5 +45,9 @@ public:
 	virtual EMappingContexts StopInteract() override;
 
 	void TriggerDialogAction(ELevelAction DialogAction);
+
+	TArray<const FDialogLine*> GetLineGroup(ECharacterName Speaker, ELineGroup NewLineGroup);
+
+	TArray<const FDialogLine*> GetViableLines(TArray<const FDialogLine*> DialogLines) const;
 	
 };

@@ -2,9 +2,14 @@
 
 
 #include "DialogHUD.h"
+
+#include "DialogManager.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 #include "Space_Shifter/SupporterClass.h"
+#include "Space_Shifter/GameStructure/QuestManager.h"
+#include "Space_Shifter/GameStructure/ShifterGamemode.h"
 
 void UDialogHUD::DisplayDialog() const
 {
@@ -21,30 +26,71 @@ void UDialogHUD::DisplayDialog() const
 		NPCPicture->SetBrushFromTexture(CurrentCharacter->CharacterProfile);
 	}
 	NameTextBox->SetText(FText::FromString(CurrentCharacter->CharacterNameString));
-	DialogTextBox->SetText(CurrentDialog->Text);
+	for (int i = 0; i < 3; i++)
+	{
+		UTextBlock* TextBlock;
+		switch (i)
+		{
+			default:
+			case 0:
+				TextBlock = DialogTextBox1;
+				break;
+			case 1:
+				TextBlock = DialogTextBox2;
+				break;
+			case 2:
+				TextBlock = DialogTextBox3;
+				break;
+		}
+		if (LineOptions.Num() > i)
+		{
+			TextBlock->SetText(LineOptions[i]->Text);
+			TextBlock->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			TextBlock->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
 }
 
-void UDialogHUD::BeginConversation(FCharacterStruct* NewCharacter, UDataTable* NewDialogTree)
+void UDialogHUD::BeginConversation(FCharacterStruct* NewCharacter, UDialogComponent* NewDialogComponent)
 {
 	CurrentCharacter = NewCharacter;
-	DialogTree = NewDialogTree;
+	DialogComponent = NewDialogComponent;
+	LineOptions = DialogComponent->GetViableLines(DialogComponent->GetLineGroup(CurrentCharacter->CharacterName, ELineGroup::General));
 	DisplayDialog();
 }
 
 bool UDialogHUD::NextLine()
 {
-	/*if (CurrentDialog->SentenceDialogEnums.Num() != 0)
+	const FDialogLine* CurrentLine = LineOptions[CurrentDialog];
+	if (CurrentLine->KnowledgeResults.Num() != 0)
 	{
-		for (const EDialogAction DialogAction : CurrentDialog.SentenceDialogEnums)
+		for (const EKnowledge Knowledge : CurrentLine->KnowledgeResults)
 		{
-			GetGameInstance()->GetSubsystem<UDialogManager>()->TriggerAction(DialogAction);
+			GetGameInstance()->GetSubsystem<UQuestManager>()->GetKnowledge(Knowledge);
 		}
 	}
-	if (CurrentDialog.NextSentence.IsNull())
+	if (CurrentLine->LevelActionResults.Num() != 0)
+	{
+		for (const ELevelAction LevelAction : LineOptions[CurrentDialog]->LevelActionResults)
+		{
+			GetGameInstance()->GetSubsystem<UDialogManager>()->TriggerAction(LevelAction);
+		}
+	}
+	if (CurrentLine->SceneChangeResult != EScene::SceneDefault)
+	{
+		Cast<AShifterGamemode>(UGameplayStatics::GetGameMode(this))->ChangeScene(CurrentLine->SceneChangeResult);
+	}
+	if (CurrentLine->bLeave)
 	{
 		return false;
 	}
-	CurrentDialog = *CurrentDialog.NextSentence.GetRow<FDialogStruct>("");
-	DisplayDialog();*/
+	LineOptions.Empty();
+	CurrentCharacter = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UQuestManager>()->GetCharacterStruct(CurrentLine->NextCharacter);
+	LineOptions = DialogComponent->GetViableLines(DialogComponent->GetLineGroup(CurrentCharacter->CharacterName, CurrentLine->NextLineGroup));
+	ensure(LineOptions.Num() != 0);
+	DisplayDialog();
 	return true;
 }

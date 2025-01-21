@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Space_Shifter/GameStructure/MenuGamemode.h"
 
-void UMainMenu::Setup()
+void UMainMenu::SetupMenu()
 {
 	AddToViewport();
 
@@ -39,7 +39,7 @@ void UMainMenu::NativeConstruct()
 	Super::NativeConstruct();
 
 	StartGameButton->OnClicked.AddDynamic(this, &UMainMenu::Start);
-	SettingsButton->OnClicked.AddDynamic(this, &UMainMenu::Setup);
+	SettingsButton->OnClicked.AddDynamic(this, &UMainMenu::SwitchScreen);
 	QuitGameButton->OnClicked.AddDynamic(this, &UMainMenu::Quit);
 
 }

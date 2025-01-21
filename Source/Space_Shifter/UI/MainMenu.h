@@ -32,7 +32,7 @@ private:
 
 public:
 
-	void Setup();
+	void SetupMenu();
 
 protected:
 

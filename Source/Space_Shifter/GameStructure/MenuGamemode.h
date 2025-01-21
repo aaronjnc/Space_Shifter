@@ -20,6 +20,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "HUD")
 	TSubclassOf<UMainMenu> MainMenuClass;
 
+	UPROPERTY(EditAnywhere, Category = "Quests")
+	int StartingQuest = 0;
+
 public:
 
 	virtual void BeginPlay() override;

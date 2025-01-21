@@ -24,3 +24,8 @@ AActor* AShifterGamemode::ChoosePlayerStart_Implementation(AController* Player)
 	}
 	return Super::ChoosePlayerStart_Implementation(Player);
 }
+
+void AShifterGamemode::ChangeScene(const TEnumAsByte<EScene> NewScene)
+{
+	UGameplayStatics::OpenLevelBySoftObjectPtr(this, SceneMapping[NewScene]);
+}
