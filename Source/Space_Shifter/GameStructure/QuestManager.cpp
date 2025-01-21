@@ -31,7 +31,11 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 void UQuestManager::UpdateCharacters()
 {
 	CharacterStructs.Empty();
-	
+	for (const TPair<FName, uint8*> RowItr : CurrentQuestList->CharacterTable->GetRowMap())
+	{
+		FCharacterStruct* NewCharacter = reinterpret_cast<FCharacterStruct*>(RowItr.Value);
+		CharacterStructs.Add(NewCharacter->CharacterName, NewCharacter);
+	}
 }
 
 void UQuestManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -88,12 +92,12 @@ ULevelSequence* UQuestManager::GetCutscene() const
 	return CutsceneStruct->CutsceneVideo;
 }
 
-FCharacterStruct UQuestManager::GetCharacterStruct(const ECharacterName CharacterName)
+FCharacterStruct* UQuestManager::GetCharacterStruct(const ECharacterName CharacterName)
 {
 	if (CharacterStructs.Contains(CharacterName))
 	{
-		return *CharacterStructs[CharacterName];
+		return CharacterStructs[CharacterName];
 	}
 	UE_LOG(LogTemp, Error, TEXT("Character Invalid: %s"), *UEnum::GetValueAsString(CharacterName));
-	return FCharacterStruct();
+	return new FCharacterStruct();
 }

@@ -35,5 +35,5 @@ void AMenuGamemode::BeginPlay()
 
 void AMenuGamemode::LoadGame()
 {
-	GetGameInstance()->GetSubsystem<UQuestManager>()->LoadQuest(0);
+	GetGameInstance()->GetSubsystem<UQuestManager>()->LoadQuest(StartingQuest);
 }

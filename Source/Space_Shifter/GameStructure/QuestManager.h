@@ -17,7 +17,7 @@ class ULevelSequence;
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class SPACE_SHIFTER_API UQuestManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -37,7 +37,7 @@ private:
 	TObjectPtr<UDataTable> QuestListDataTable;
 
 	bool bIsCutscene = false;
-
+	
 	TMap<ECharacterName, FCharacterStruct*> CharacterStructs;
 
 	TMap<EKnowledge, bool> KnowledgeMap;
@@ -70,6 +70,6 @@ public:
 	
 	ULevelSequence* GetCutscene() const;
 
-	FCharacterStruct GetCharacterStruct(const ECharacterName CharacterName);
+	FCharacterStruct* GetCharacterStruct(const ECharacterName CharacterName);
 	
 };

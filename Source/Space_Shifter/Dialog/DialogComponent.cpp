@@ -25,14 +25,21 @@ void UDialogComponent::BeginPlay()
 	Super::BeginPlay();
 
 	QuestManager = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UQuestManager>();
+	CharacterStruct = QuestManager->GetCharacterStruct(CharacterEnum);
+	UE_LOG(LogTemp, Warning, TEXT("Character Name: %s"), *CharacterStruct->CharacterNameString);
+	checkf(DialogTree != nullptr, TEXT("Invalid dialog tree on object %s"), *GetOwner()->GetName());
 	for (const TPair<FName, uint8*> RowItr : DialogTree->GetRowMap())
 	{
 		const FDialogLine* DialogLine = reinterpret_cast<const FDialogLine*>(RowItr.Value);
-		if (!LineGroupLinks.Contains(DialogLine->LineGroup))
+		if (!LineGroupLinks.Contains(DialogLine->Speaker))
 		{
-			LineGroupLinks.Add(DialogLine->LineGroup, TArray<const FDialogLine*>());
+			LineGroupLinks.Add(DialogLine->Speaker, TMap<TEnumAsByte<ELineGroup>, TArray<const FDialogLine*>>());
 		}
-		LineGroupLinks[DialogLine->LineGroup].Add(DialogLine);
+		if (!LineGroupLinks[DialogLine->Speaker].Contains(DialogLine->LineGroup))
+		{
+			LineGroupLinks[DialogLine->Speaker].Add(DialogLine->LineGroup, TArray<const FDialogLine*>());
+		}
+		LineGroupLinks[DialogLine->Speaker][DialogLine->LineGroup].Add(DialogLine);
 	}
 }
 
@@ -69,9 +76,9 @@ void UDialogComponent::TriggerDialogAction(ELevelAction DialogAction)
 	}
 }
 
-TArray<const FDialogLine*> UDialogComponent::GetLineGroup(ELineGroup NewLineGroup)
+TArray<const FDialogLine*> UDialogComponent::GetLineGroup(ECharacterName Speaker, ELineGroup NewLineGroup)
 {
-	return LineGroupLinks[NewLineGroup];
+	return LineGroupLinks[Speaker][NewLineGroup];
 }
 
 TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialogLine*> DialogLines) const
@@ -101,7 +108,12 @@ TArray<const FDialogLine*> UDialogComponent::GetViableLines(TArray<const FDialog
 		}
 		if (bValid)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Valid Line: %s"), *DialogLines[i]->Text.ToString());
 			ViableLines.Add(DialogLines[i]);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid Line: %s"), *DialogLines[i]->Text.ToString());
 		}
 	}
 	ensure(DialogLines.Num() <= 3);

@@ -43,6 +43,7 @@ UENUM(BlueprintType)
 enum EKnowledge
 {
 	KnowledgeDefault,
+	NewKnowledge,
 	Knowledge_Max UMETA(Hidden)
 };
 ENUM_RANGE_BY_COUNT(EKnowledge, EKnowledge::Knowledge_Max);
@@ -80,34 +81,37 @@ struct FDialogLine : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Preliminary")
 	TEnumAsByte<ELineGroup> LineGroup;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Preliminary")
 	TArray<TEnumAsByte<EKnowledge>> Prerequisites;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Preliminary")
 	TArray<TEnumAsByte<EKnowledge>> Disqualifiers;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Current")
 	FText Text;
 
-	UPROPERTY(EditAnywhere)
-	FDataTableRowHandle Speaker;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Current")
+	TEnumAsByte<ECharacterName> Speaker;
+	
+	UPROPERTY(EditAnywhere, Category = "Actions")
 	TArray<TEnumAsByte<ELevelAction>> LevelActionResults;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Actions")
 	TEnumAsByte<EScene> SceneChangeResult;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Actions")
 	TArray<TEnumAsByte<EKnowledge>> KnowledgeResults;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Next Step")
+	TEnumAsByte<ECharacterName> NextCharacter;
+
+	UPROPERTY(EditAnywhere, Category = "Next Step")
 	TEnumAsByte<ELineGroup> NextLineGroup;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Next Step")
 	bool bLeave;
 };
 
@@ -148,6 +152,9 @@ struct FQuestStruct : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere)
 	FString QuestName;
+
+	UPROPERTY(EditAnywhere)
+	UDataTable* CharacterTable;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FDataTableRowHandle> SceneList;

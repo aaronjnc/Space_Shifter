@@ -20,5 +20,5 @@ void URetConGameInstance::SetupMainMenu(TSubclassOf<UMainMenu> MainMenuClass)
 		UE_LOG(LogTemp, Warning, TEXT("Invalid"));
 	}
 	
-	MainMenu->Setup();
+	MainMenu->SetupMenu();
 }

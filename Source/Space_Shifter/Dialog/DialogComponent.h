@@ -21,10 +21,10 @@ private:
 	TMap<TEnumAsByte<ELevelAction>, TObjectPtr<AActor>> SentenceDialogActions;
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	TEnumAsByte<enum ECharacterName> CharacterEnum;
-	UPROPERTY(EditAnywhere, Category = "Dialog")
+	UPROPERTY(EditAnywhere, Category = "Dialog", meta=(RequiredAssetDataTags = "RowStructure=/Script/Space_Shifter.DialogLine"))
 	UDataTable* DialogTree;
 	FCharacterStruct* CharacterStruct;
-	TMap<TEnumAsByte<ELineGroup>, TArray<const FDialogLine*>> LineGroupLinks;
+	TMap<TEnumAsByte<ECharacterName>, TMap<TEnumAsByte<ELineGroup>, TArray<const FDialogLine*>>> LineGroupLinks;
 	UPROPERTY()
 	UQuestManager* QuestManager;
 
@@ -46,7 +46,7 @@ public:
 
 	void TriggerDialogAction(ELevelAction DialogAction);
 
-	TArray<const FDialogLine*> GetLineGroup(ELineGroup NewLineGroup);
+	TArray<const FDialogLine*> GetLineGroup(ECharacterName Speaker, ELineGroup NewLineGroup);
 
 	TArray<const FDialogLine*> GetViableLines(TArray<const FDialogLine*> DialogLines) const;
 	

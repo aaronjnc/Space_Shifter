@@ -58,35 +58,38 @@ void UDialogHUD::BeginConversation(FCharacterStruct* NewCharacter, UDialogCompon
 {
 	CurrentCharacter = NewCharacter;
 	DialogComponent = NewDialogComponent;
+	LineOptions = DialogComponent->GetViableLines(DialogComponent->GetLineGroup(CurrentCharacter->CharacterName, ELineGroup::General));
 	DisplayDialog();
 }
 
 bool UDialogHUD::NextLine()
 {
-	if (LineOptions[CurrentDialog]->KnowledgeResults.Num() != 0)
+	const FDialogLine* CurrentLine = LineOptions[CurrentDialog];
+	if (CurrentLine->KnowledgeResults.Num() != 0)
 	{
-		for (const EKnowledge Knowledge : LineOptions[CurrentDialog]->KnowledgeResults)
+		for (const EKnowledge Knowledge : CurrentLine->KnowledgeResults)
 		{
 			GetGameInstance()->GetSubsystem<UQuestManager>()->GetKnowledge(Knowledge);
 		}
 	}
-	if (LineOptions[CurrentDialog]->LevelActionResults.Num() != 0)
+	if (CurrentLine->LevelActionResults.Num() != 0)
 	{
 		for (const ELevelAction LevelAction : LineOptions[CurrentDialog]->LevelActionResults)
 		{
 			GetGameInstance()->GetSubsystem<UDialogManager>()->TriggerAction(LevelAction);
 		}
 	}
-	if (LineOptions[CurrentDialog]->SceneChangeResult)
+	if (CurrentLine->SceneChangeResult != EScene::SceneDefault)
 	{
-		Cast<AShifterGamemode>(UGameplayStatics::GetGameMode(this))->ChangeScene(LineOptions[CurrentDialog]->SceneChangeResult);
+		Cast<AShifterGamemode>(UGameplayStatics::GetGameMode(this))->ChangeScene(CurrentLine->SceneChangeResult);
 	}
-	if (LineOptions[CurrentDialog]->bLeave)
+	if (CurrentLine->bLeave)
 	{
 		return false;
 	}
 	LineOptions.Empty();
-	LineOptions = DialogComponent->GetViableLines(DialogComponent->GetLineGroup(LineOptions[CurrentDialog]->NextLineGroup));
+	CurrentCharacter = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UQuestManager>()->GetCharacterStruct(CurrentLine->NextCharacter);
+	LineOptions = DialogComponent->GetViableLines(DialogComponent->GetLineGroup(CurrentCharacter->CharacterName, CurrentLine->NextLineGroup));
 	ensure(LineOptions.Num() != 0);
 	DisplayDialog();
 	return true;
