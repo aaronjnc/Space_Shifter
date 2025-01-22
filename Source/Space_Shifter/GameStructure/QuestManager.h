@@ -32,7 +32,7 @@ private:
 
 	FCutsceneStruct* CutsceneStruct;
 
-	FQuestStruct* CurrentQuestList;
+	FQuestStruct* CurrentQuest;
 	
 	TObjectPtr<UDataTable> QuestListDataTable;
 
@@ -67,6 +67,8 @@ public:
 	void NextScene();
 
 	void LoadScene(const int& LevelNum);
+
+	float GetQuestTimeLimit();
 	
 	ULevelSequence* GetCutscene() const;
 

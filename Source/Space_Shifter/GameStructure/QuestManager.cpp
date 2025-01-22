@@ -17,7 +17,7 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 {
 	bIsCutscene = true;
 	//CutsceneStruct = CurrentQuestList->SceneList[SceneNum].GetRow<FCutsceneStruct>("");
-	CurrentScene = CurrentQuestList->SceneList[SceneNum].GetRow<FSceneStruct>("");
+	CurrentScene = CurrentQuest->SceneList[SceneNum].GetRow<FSceneStruct>("");
 	if (!CutsceneStruct)
 	{
 		bIsCutscene = false;
@@ -31,7 +31,7 @@ void UQuestManager::UpdateScene(const int& SceneNum)
 void UQuestManager::UpdateCharacters()
 {
 	CharacterStructs.Empty();
-	for (const TPair<FName, uint8*> RowItr : CurrentQuestList->CharacterTable->GetRowMap())
+	for (const TPair<FName, uint8*> RowItr : CurrentQuest->CharacterTable->GetRowMap())
 	{
 		FCharacterStruct* NewCharacter = reinterpret_cast<FCharacterStruct*>(RowItr.Value);
 		CharacterStructs.Add(NewCharacter->CharacterName, NewCharacter);
@@ -68,7 +68,7 @@ void UQuestManager::NextQuest()
 void UQuestManager::LoadQuest(const int& QuestNum)
 {
 	CurrentQuestNum = QuestNum;
-	CurrentQuestList = GetQuest(CurrentQuestNum);
+	CurrentQuest = GetQuest(CurrentQuestNum);
 	CurrentSceneNum = 0;
 	UE_LOG(LogTemp, Warning, TEXT("Load Level"));
 	LoadScene(0);
@@ -85,6 +85,11 @@ void UQuestManager::LoadScene(const int& LevelNum)
 	CurrentSceneNum = LevelNum;
 	UGameplayStatics::OpenLevelBySoftObjectPtr(this, CurrentScene->Level);
 	UpdateCharacters();
+}
+
+float UQuestManager::GetQuestTimeLimit()
+{
+	return CurrentQuest->TimeLimit;
 }
 
 ULevelSequence* UQuestManager::GetCutscene() const

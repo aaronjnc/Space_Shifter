@@ -158,6 +158,9 @@ struct FQuestStruct : public FTableRowBase
 
 	UPROPERTY(EditAnywhere)
 	TArray<FDataTableRowHandle> SceneList;
+
+	UPROPERTY(EditAnywhere)
+	float TimeLimit = 30;
 };
 
 /**
