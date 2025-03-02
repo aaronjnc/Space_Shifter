@@ -14,7 +14,7 @@ struct FActorSaveData
 public:
 
 	UPROPERTY()
-	FName ActorName;
+	FString ActorName;
 
 	UPROPERTY()
 	FTransform Transform;

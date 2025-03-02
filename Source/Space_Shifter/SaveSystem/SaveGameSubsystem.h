@@ -9,6 +9,10 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSaveTimeDelegate, int, SaveNum);
 
+static const FString GGameSaveLocation = "_GameSave";
+static const FString GTravelPoint = "_TravelSave";
+static const FString GSavePoint = "_SavePoint";
+
 /**
  * 
  */
@@ -26,8 +30,16 @@ private:
 
 public:
 
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 	UFUNCTION()
-	void WriteSave();
+	void SaveGame();
+
+	UFUNCTION()
+	void SaveEnvironment(const FString& SaveName);
+
+	UFUNCTION()
+	void SavePlayer();
 
 	UFUNCTION()
 	void LoadSave();
