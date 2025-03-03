@@ -36,6 +36,40 @@ struct FPlayerSaveData
 	TArray<uint8> ByteData;
 };
 
+USTRUCT()
+struct FPlayerComponentSaveData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<uint8> ByteData;
+};
+
+UCLASS()
+class SPACE_SHIFTER_API URetConEnvironmentSave : public USaveGame
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	TMap<FName, FActorSaveData> SavedActorMap;
+};
+
+UCLASS()
+class SPACE_SHIFTER_API URetConPlayerSave : public USaveGame
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	FPlayerSaveData PlayerSave;
+
+	UPROPERTY()
+	TMap<FString, FPlayerComponentSaveData> PlayerComponents;
+};
+
 /**
  * 
  */
@@ -47,9 +81,6 @@ class SPACE_SHIFTER_API URetConSaveGame : public USaveGame
 public:	
 
 	UPROPERTY()
-	FPlayerSaveData PlayerSave;
-
-	UPROPERTY()
-	TMap<FName, FActorSaveData> SavedActorMap;
+	TArray<int> SaveSlots;
 	
 };

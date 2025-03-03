@@ -10,6 +10,7 @@
 #include "StereoRendering.h"
 #include "SceneView.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "Space_Shifter/Dialog/DialogManager.h"
 
 FMatrix AShifterController::GetCameraProjectionMatrix()
@@ -41,6 +42,21 @@ void AShifterController::SetMappingContext(const EMappingContexts& NewContext)
 void AShifterController::SetupInput()
 {
 	SetupInputComponent();
+}
+
+void AShifterController::SavePlayerInfo(URetConPlayerSave* PlayerSave)
+{
+	FPlayerSaveData SaveData;
+	SaveData.Transform = PlayerCharacter->GetTransform();
+	FMemoryWriter MemWriter(SaveData.ByteData);
+
+	FObjectAndNameAsStringProxyArchive Ar(MemWriter, true);
+
+	Ar.ArIsSaveGame = true;
+
+	Serialize(Ar);
+
+	OnPlayerSaved.Broadcast(PlayerSave);
 }
 
 void AShifterController::BeginPlay()

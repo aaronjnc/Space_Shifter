@@ -35,3 +35,9 @@ EMappingContexts ANPC::StopInteract()
 {
 	return DialogComponent->StopInteract();
 }
+
+void ANPC::OnActorLoaded()
+{
+	ISavedObject::OnActorLoaded();
+	
+}

@@ -12,6 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSaveTimeDelegate, int, SaveNum);
 static const FString GGameSaveLocation = "_GameSave";
 static const FString GTravelPoint = "_TravelSave";
 static const FString GSavePoint = "_SavePoint";
+static const FString GPlayerSave = "_PlayerSave";
 
 /**
  * 
@@ -27,6 +28,12 @@ private:
 
 	UPROPERTY()
 	URetConSaveGame* CurrentSaveGame;
+
+	UPROPERTY()
+	URetConEnvironmentSave* CurrentEnvironmentSave;
+
+	UPROPERTY()
+	URetConPlayerSave* CurrentPlayerSave;
 
 public:
 

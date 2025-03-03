@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Space_Shifter/SaveSystem/RetConSaveGame.h"
 #include "ShifterController.generated.h"
-
 
 /**
  * 
@@ -25,10 +25,16 @@ enum EMappingContexts
 	MouseInteraction,
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSavePlayerDelegate, URetConPlayerSave*, PlayerSave);
+
 UCLASS()
 class SPACE_SHIFTER_API AShifterController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+
+	FSavePlayerDelegate OnPlayerSaved;
 
 private:
 
@@ -69,6 +75,8 @@ public:
 	void SetMappingContext(const EMappingContexts& NewContext);
 
 	void SetupInput();
+
+	void SavePlayerInfo(URetConPlayerSave* PlayerSave);
 
 protected:
 

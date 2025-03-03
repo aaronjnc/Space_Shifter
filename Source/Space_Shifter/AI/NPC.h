@@ -6,10 +6,11 @@
 #include "GameFramework/Character.h"
 #include "Space_Shifter/Dialog/DialogComponent.h"
 #include "Space_Shifter/Interactables/InteractableInterface.h"
+#include "Space_Shifter/SaveSystem/SavedObject.h"
 #include "NPC.generated.h"
 
 UCLASS()
-class SPACE_SHIFTER_API ANPC : public ACharacter, public IInteractableInterface
+class SPACE_SHIFTER_API ANPC : public ACharacter, public IInteractableInterface, public ISavedObject
 {
 	GENERATED_BODY()
 
@@ -33,5 +34,7 @@ public:
 	virtual EMappingContexts Interact() override;
 
 	virtual EMappingContexts StopInteract() override;
+
+	virtual void OnActorLoaded() override;
 
 };

@@ -7,6 +7,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Space_Shifter/Player/ShifterController.h"
 
 void USaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -23,7 +24,7 @@ void USaveGameSubsystem::SaveGame()
 
 void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 {
-	CurrentSaveGame->SavedActorMap.Empty();
+	CurrentEnvironmentSave->SavedActorMap.Empty();
 
 	AGameStateBase* GameState = GetWorld()->GetGameState();
 	check(GameState);
@@ -47,16 +48,20 @@ void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 
 		Actor->Serialize(Ar);
 
-		CurrentSaveGame->SavedActorMap.Add(Actor->GetFName(), ActorData);
+		CurrentEnvironmentSave->SavedActorMap.Add(Actor->GetFName(), ActorData);
 	}
 
-	FString EnvSaveSlot = CurrentSaveSlot + SaveName;
-	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, EnvSaveSlot, 0);
+	const FString EnvSaveSlot = CurrentSaveSlot + SaveName;
+	UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0);
 }
 
 void USaveGameSubsystem::SavePlayer()
 {
-	
+	AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	Controller->SavePlayerInfo(CurrentPlayerSave);
+
+	const FString PlayerSaveSlot = CurrentSaveSlot + PlayerSaveSlot;
+	UGameplayStatics::SaveGameToSlot(CurrentPlayerSave, PlayerSaveSlot, 0);
 }
 
 void USaveGameSubsystem::LoadSave()
