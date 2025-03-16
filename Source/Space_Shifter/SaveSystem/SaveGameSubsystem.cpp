@@ -51,7 +51,7 @@ void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 		CurrentEnvironmentSave->SavedActorMap.Add(Actor->GetFName(), ActorData);
 	}
 
-	const FString EnvSaveSlot = CurrentSaveSlot + SaveName;
+	const FString EnvSaveSlot = CurrentSaveSlot + "_" + SaveName;
 	UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0);
 }
 
@@ -64,7 +64,12 @@ void USaveGameSubsystem::SavePlayer()
 	UGameplayStatics::SaveGameToSlot(CurrentPlayerSave, PlayerSaveSlot, 0);
 }
 
-void USaveGameSubsystem::LoadSave()
+void USaveGameSubsystem::LoadSave(const FString& SaveName)
+{
+	
+}
+
+void USaveGameSubsystem::LoadEnvironment(const FString& SaveName)
 {
 	
 }

@@ -6,8 +6,9 @@
 #include "TimeEvent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Space_Shifter/GameStructure/QuestManager.h"
+#include "Space_Shifter/SaveSystem/SaveGameSubsystem.h"
 
-bool UTimeManager::HasAvailableTimeStamp()
+bool UTimeManager::HasAvailableTimeStamp() const
 {
 	return FreeTimeStamps.Num() > 0;
 }
@@ -22,6 +23,7 @@ int UTimeManager::DropTimeStamp()
 	const int Id = NewStamp->TimeStampId;
 	UsedTimeStamps.Add(Id, NewStamp);
 	OnSaveTimeDelegate.Broadcast(Id);
+	SaveGameSubsystem->SaveEnvironment("TimeStamp"+Id);
 	return Id;
 }
 
@@ -30,6 +32,7 @@ void UTimeManager::LoadTimeStamp(const int &StampNumber)
 	const float StampTime = UsedTimeStamps[StampNumber]->TimeStamp;
 	CountdownTimer = StampTime;
 	OnLoadTimeDelegate.Broadcast(StampNumber);
+	SaveGameSubsystem->LoadEnvironment("TimeStamp"+StampNumber);
 }
 
 void UTimeManager::DeleteTimeStamp(const int &StampNumber)

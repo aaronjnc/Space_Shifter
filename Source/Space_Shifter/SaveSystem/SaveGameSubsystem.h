@@ -7,8 +7,6 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SaveGameSubsystem.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSaveTimeDelegate, int, SaveNum);
-
 static const FString GGameSaveLocation = "_GameSave";
 static const FString GTravelPoint = "_TravelSave";
 static const FString GSavePoint = "_SavePoint";
@@ -49,5 +47,8 @@ public:
 	void SavePlayer();
 
 	UFUNCTION()
-	void LoadSave();
+	void LoadSave(const FString& SaveName);
+
+	UFUNCTION()
+	void LoadEnvironment(const FString& SaveName);
 };

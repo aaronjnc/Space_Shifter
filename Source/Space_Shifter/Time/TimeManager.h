@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Space_Shifter/SaveSystem/SaveGameSubsystem.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "TimeManager.generated.h"
 
@@ -67,9 +68,11 @@ private:
 
 	TArray<FTimeStamp*> FreeTimeStamps;
 
+	USaveGameSubsystem* SaveGameSubsystem;
+
 public:
 
-	bool HasAvailableTimeStamp();
+	bool HasAvailableTimeStamp() const;
 
 	int DropTimeStamp();
 
