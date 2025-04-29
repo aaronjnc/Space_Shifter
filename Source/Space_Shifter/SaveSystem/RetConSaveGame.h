@@ -83,4 +83,18 @@ public:
 	UPROPERTY()
 	TArray<int> SaveSlots;
 	
+	//Level Progress
+	
+};
+
+UCLASS()
+class SPACE_SHIFTER_API UUserSaveGame : public USaveGame
+{
+	GENERATED_BODY()
+
+public:
+
+	int AchievementsFound = 0;
+	//Settings
+	//Achievements
 };

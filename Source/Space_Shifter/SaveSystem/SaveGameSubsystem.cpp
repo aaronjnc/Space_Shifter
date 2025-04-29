@@ -7,13 +7,54 @@
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Space_Shifter/PlayerCharacter.h"
 #include "Space_Shifter/Player/ShifterController.h"
+
+void USaveGameSubsystem::CreateNewSave(const FString& SaveName)
+{
+	const FString GameSavePath = FString::Printf(TEXT("%s%s"), *SaveName, *GGameSaveLocation);
+	const FString PlayerPath = FString::Printf(TEXT("%s%s"), *SaveName, *GPlayerSave);
+	const FString LevelSavePath = FString::Printf(TEXT("%s%s"), *SaveName, *GPlayerSave);
+	TArray<FString> TimeSlots;
+	for (int i = 0; i < 5; i++)
+	{
+		TimeSlots.Add(FString::Printf(TEXT("%s%s%d"), *SaveName, *GTimeSlotSave, i+1));
+	}
+	
+	if (!UGameplayStatics::DoesSaveGameExist(GameSavePath, 0))
+	{
+		UUserSaveGame* UserSave = Cast<UUserSaveGame>(UGameplayStatics::CreateSaveGameObject(UUserSaveGame::StaticClass()));
+		UGameplayStatics::SaveGameToSlot(UserSave, GameSavePath, 0);
+		URetConPlayerSave* PlayerSave = Cast<URetConPlayerSave>(UGameplayStatics::CreateSaveGameObject(URetConPlayerSave::StaticClass()));
+		UGameplayStatics::SaveGameToSlot(PlayerSave, PlayerPath, 0);
+		URetConEnvironmentSave* LevelSave = Cast<URetConEnvironmentSave>(UGameplayStatics::CreateSaveGameObject(URetConEnvironmentSave::StaticClass()));
+		UGameplayStatics::SaveGameToSlot(LevelSave, LevelSavePath, 0);
+		for (FString TimeSlot : TimeSlots)
+		{
+			URetConEnvironmentSave* TimeSlotSave = Cast<URetConEnvironmentSave>(UGameplayStatics::CreateSaveGameObject(URetConEnvironmentSave::StaticClass()));
+			UGameplayStatics::SaveGameToSlot(TimeSlotSave, TimeSlot, 0);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Save Game with name %s already exists.", SaveName));
+	}
+}
+
+void USaveGameSubsystem::DeleteSave(const FString& SaveName)
+{
+}
+
+TArray<FString> USaveGameSubsystem::GetSaves()
+{
+	
+}
 
 void USaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	const UGameUserSettings* Settings = GetDefault<UGameUserSettings>();
+	//const UGameUserSettings* Settings = GetDefault<UGameUserSettings>();
 }
 
 void USaveGameSubsystem::SaveGame()
@@ -52,7 +93,10 @@ void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 	}
 
 	const FString EnvSaveSlot = CurrentSaveSlot + "_" + SaveName;
-	UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0);
+	if (!UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Unable to save environment to %s", EnvSaveSlot));
+	}
 }
 
 void USaveGameSubsystem::SavePlayer()
@@ -61,15 +105,69 @@ void USaveGameSubsystem::SavePlayer()
 	Controller->SavePlayerInfo(CurrentPlayerSave);
 
 	const FString PlayerSaveSlot = CurrentSaveSlot + PlayerSaveSlot;
-	UGameplayStatics::SaveGameToSlot(CurrentPlayerSave, PlayerSaveSlot, 0);
+	if (!UGameplayStatics::SaveGameToSlot(CurrentPlayerSave, PlayerSaveSlot, 0))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Unable to save player to %s", PlayerSaveSlot));
+	}
 }
 
 void USaveGameSubsystem::LoadSave(const FString& SaveName)
 {
-	
+	const FString PlayerSaveSlot = CurrentSaveSlot + PlayerSaveSlot;
+	if (UGameplayStatics::DoesSaveGameExist(PlayerSaveSlot, 0))
+	{
+		CurrentPlayerSave = Cast<URetConPlayerSave>(UGameplayStatics::LoadGameFromSlot(PlayerSaveSlot, 0));
+		if (!CurrentPlayerSave)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to load Player data"));
+			return;
+		}
+
+		AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+		FMemoryReader MemReader(CurrentPlayerSave->PlayerSave.ByteData);
+
+		FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
+		Ar.ArIsSaveGame = true;
+
+		Controller->Serialize(Ar);
+
+		Controller->LoadPlayerInfo(CurrentPlayerSave);
+	}
+	LoadEnvironment(SaveName);
 }
 
 void USaveGameSubsystem::LoadEnvironment(const FString& SaveName)
 {
-	
+	const FString EnvSave = CurrentSaveSlot + "_" + SaveName;
+	if (UGameplayStatics::DoesSaveGameExist(EnvSave, 0))
+	{
+		CurrentEnvironmentSave = Cast<URetConEnvironmentSave>(UGameplayStatics::LoadGameFromSlot(EnvSave, 0));
+		if (!CurrentEnvironmentSave)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to load SaveGame data"));
+			return;
+		}
+
+		for (AActor* Actor : TActorRange<AActor>(GetWorld()))
+		{
+			if (!IsValid(Actor) || !Actor->Implements<USavedObject>())
+			{
+				continue;
+			}
+
+			if (CurrentEnvironmentSave->SavedActorMap.Contains(Actor->GetFName()))
+			{
+				FActorSaveData ActorData = CurrentEnvironmentSave->SavedActorMap[Actor->GetFName()];
+				Actor->SetActorTransform(ActorData.Transform);
+
+				FMemoryReader MemReader(ActorData.ByteData);
+
+				FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
+				Ar.ArIsSaveGame = true;
+
+				Actor->Serialize(Ar);
+			}
+		}
+	}
 }

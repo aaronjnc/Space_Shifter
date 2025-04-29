@@ -59,6 +59,11 @@ void AShifterController::SavePlayerInfo(URetConPlayerSave* PlayerSave)
 	OnPlayerSaved.Broadcast(PlayerSave);
 }
 
+void AShifterController::LoadPlayerInfo(URetConPlayerSave* PlayerSave)
+{
+	PlayerCharacter->SetActorTransform(PlayerSave->PlayerSave.Transform);
+}
+
 void AShifterController::BeginPlay()
 {
 	Super::BeginPlay();

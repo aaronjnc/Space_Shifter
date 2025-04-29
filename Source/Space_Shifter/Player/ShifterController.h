@@ -78,6 +78,8 @@ public:
 
 	void SavePlayerInfo(URetConPlayerSave* PlayerSave);
 
+	void LoadPlayerInfo(URetConPlayerSave* PlayerSave);
+
 protected:
 
 	virtual void BeginPlay() override;

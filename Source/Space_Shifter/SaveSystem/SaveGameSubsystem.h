@@ -8,8 +8,8 @@
 #include "SaveGameSubsystem.generated.h"
 
 static const FString GGameSaveLocation = "_GameSave";
-static const FString GTravelPoint = "_TravelSave";
-static const FString GSavePoint = "_SavePoint";
+static const FString GTimeSlotSave = "_TimeSlot_";
+static const FString GLevelSave = "_CurrentLevel";
 static const FString GPlayerSave = "_PlayerSave";
 
 /**
@@ -34,6 +34,12 @@ private:
 	URetConPlayerSave* CurrentPlayerSave;
 
 public:
+
+	void CreateNewSave(const FString& SaveName);
+
+	void DeleteSave(const FString& SaveName);
+
+	TArray<FString> GetSaves();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
