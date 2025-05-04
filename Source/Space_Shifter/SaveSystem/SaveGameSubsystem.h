@@ -57,4 +57,6 @@ public:
 
 	UFUNCTION()
 	void LoadEnvironment(const FString& SaveName);
+
+	static FString GetSavePath(const FString& SaveName, const FString& SaveType);
 };

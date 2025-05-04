@@ -12,13 +12,13 @@
 
 void USaveGameSubsystem::CreateNewSave(const FString& SaveName)
 {
-	const FString GameSavePath = FString::Printf(TEXT("%s%s"), *SaveName, *GGameSaveLocation);
-	const FString PlayerPath = FString::Printf(TEXT("%s%s"), *SaveName, *GPlayerSave);
-	const FString LevelSavePath = FString::Printf(TEXT("%s%s"), *SaveName, *GPlayerSave);
+	const FString GameSavePath = GetSavePath(SaveName, GGameSaveLocation);
+	const FString PlayerPath = GetSavePath(SaveName, GPlayerSave);
+	const FString LevelSavePath = GetSavePath(SaveName, GLevelSave);
 	TArray<FString> TimeSlots;
 	for (int i = 0; i < 5; i++)
 	{
-		TimeSlots.Add(FString::Printf(TEXT("%s%s%d"), *SaveName, *GTimeSlotSave, i+1));
+		TimeSlots.Add(FString::Printf(TEXT("%s_%d"), *GetSavePath(SaveName, GTimeSlotSave), i+1));
 	}
 	
 	if (!UGameplayStatics::DoesSaveGameExist(GameSavePath, 0))
@@ -41,13 +41,45 @@ void USaveGameSubsystem::CreateNewSave(const FString& SaveName)
 	}
 }
 
-void USaveGameSubsystem::DeleteSave(const FString& SaveName)
+void USaveGameSubsystem::DeleteSave(const FString& SaveName) 
 {
+	TArray<FString> SavePaths;
+	SavePaths.Add(GetSavePath(SaveName, GGameSaveLocation));
+	SavePaths.Add(GetSavePath(SaveName, GPlayerSave));
+	SavePaths.Add(GetSavePath(SaveName, GLevelSave));
+	for (int i = 0; i < 5; i++)
+	{
+		SavePaths.Add(FString::Printf(TEXT("%s_%d"), *GetSavePath(SaveName, GTimeSlotSave), i+1));
+	}
+	for (FString Path : SavePaths)
+	{
+		if (UGameplayStatics::DoesSaveGameExist(Path, 0))
+		{
+			UGameplayStatics::DeleteGameInSlot(Path, 0);
+		}
+	}
 }
 
 TArray<FString> USaveGameSubsystem::GetSaves()
 {
+	TArray<FString> SaveNames;
+
+	const FString& SaveFolder = FPaths::ProjectSavedDir();
 	
+	IFileManager& FileManager = IFileManager::Get();
+
+	TArray<FString> FileNames;
+	FileManager.FindFiles(FileNames, *SaveFolder, true, false);
+	for (FString File : FileNames)
+	{
+		FString GameName, SaveType;
+		File.Split(",", &GameName, &SaveType);
+		if (SaveType.Equals(GGameSaveLocation))
+		{
+			SaveNames.Add(GameName);
+		}
+	}
+	return SaveNames;
 }
 
 void USaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -92,7 +124,7 @@ void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 		CurrentEnvironmentSave->SavedActorMap.Add(Actor->GetFName(), ActorData);
 	}
 
-	const FString EnvSaveSlot = CurrentSaveSlot + "_" + SaveName;
+	const FString EnvSaveSlot = GetSavePath(CurrentSaveSlot, SaveName);
 	if (!UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0))
 	{
 		UE_LOG(LogTemp, Error, TEXT("Unable to save environment to %s", EnvSaveSlot));
@@ -170,4 +202,9 @@ void USaveGameSubsystem::LoadEnvironment(const FString& SaveName)
 			}
 		}
 	}
+}
+
+FString USaveGameSubsystem::GetSavePath(const FString& SaveName, const FString& SaveType)
+{
+	return FString::Printf(TEXT("%s_%s"), *SaveName, *SaveType);
 }
