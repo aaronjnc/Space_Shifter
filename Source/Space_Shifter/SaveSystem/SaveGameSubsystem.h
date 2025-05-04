@@ -11,6 +11,7 @@ static const FString GGameSaveLocation = "_GameSave";
 static const FString GTimeSlotSave = "_TimeSlot_";
 static const FString GLevelSave = "_CurrentLevel";
 static const FString GPlayerSave = "_PlayerSave";
+static const FString GSystemSave = "System_Save";
 
 /**
  * 
