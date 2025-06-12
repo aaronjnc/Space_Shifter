@@ -8,7 +8,8 @@ public class Space_ShifterEditorTarget : TargetRules
 	public Space_ShifterEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V4;
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
 		ExtraModuleNames.AddRange( new string[] { "Space_Shifter" } );
 	}

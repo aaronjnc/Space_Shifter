@@ -35,6 +35,5 @@ public:
 
 	virtual EMappingContexts StopInteract() override;
 
-	virtual void OnActorLoaded() override;
-
+	virtual void OnActorLoaded_Implementation() override;
 };

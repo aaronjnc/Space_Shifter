@@ -37,7 +37,7 @@ void USaveGameSubsystem::CreateNewSave(const FString& SaveName)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Save Game with name %s already exists."), SaveName);
+		UE_LOG(LogTemp, Error, TEXT("Save Game with name %s already exists."), *SaveName);
 	}
 }
 
@@ -132,19 +132,19 @@ void USaveGameSubsystem::SaveEnvironment(const FString& SaveName)
 	const FString EnvSaveSlot = GetSavePath(CurrentSaveSlot, SaveName);
 	if (!UGameplayStatics::SaveGameToSlot(CurrentEnvironmentSave, EnvSaveSlot, 0))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Unable to save environment to %s"), EnvSaveSlot);
+		UE_LOG(LogTemp, Error, TEXT("Unable to save environment to %s"), *EnvSaveSlot);
 	}
 }
 
 void USaveGameSubsystem::SavePlayer()
 {
-	AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerController(this, 0));
 	Controller->SavePlayerInfo(CurrentPlayerSave);
 
 	const FString PlayerSaveSlot = CurrentSaveSlot + PlayerSaveSlot;
 	if (!UGameplayStatics::SaveGameToSlot(CurrentPlayerSave, PlayerSaveSlot, 0))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Unable to save player to %s"), PlayerSaveSlot);
+		UE_LOG(LogTemp, Error, TEXT("Unable to save player to %s"), *PlayerSaveSlot);
 	}
 }
 
@@ -160,7 +160,7 @@ void USaveGameSubsystem::LoadSave(const FString& SaveName)
 			return;
 		}
 
-		AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		AShifterController* Controller = CastChecked<AShifterController>(UGameplayStatics::GetPlayerController(this, 0));
 
 		FMemoryReader MemReader(CurrentPlayerSave->PlayerSave.ByteData);
 
