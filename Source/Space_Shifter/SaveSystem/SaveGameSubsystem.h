@@ -7,6 +7,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SaveGameSubsystem.generated.h"
 
+static const FString GSaveSlotLocation = "_SlotSave";
 static const FString GGameSaveLocation = "_GameSave";
 static const FString GTimeSlotSave = "_TimeSlot_";
 static const FString GLevelSave = "_CurrentLevel";
@@ -36,11 +37,12 @@ private:
 
 public:
 
-	void CreateNewSave(const FString& SaveName);
+	static void CreateNewSave(const USaveInformationSave* SaveInformation);
 
 	void DeleteSave(const FString& SaveName);
 
-	TArray<FString> GetSaves();
+	UFUNCTION()
+	static TArray<USaveInformationSave*> GetSaves();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 

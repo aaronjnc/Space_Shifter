@@ -14,6 +14,7 @@ struct FSceneStruct;
 struct FQuestStruct;
 struct FCharacterStruct;
 class ULevelSequence;
+
 /**
  * 
  */

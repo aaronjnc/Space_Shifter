@@ -2,6 +2,8 @@
 
 
 #include "MainMenu.h"
+
+#include "SaveGameHUD.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Kismet/GameplayStatics.h"
@@ -58,7 +60,11 @@ bool UMainMenu::Initialize()
 void UMainMenu::Start()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Clicked"));
-	Cast<AMenuGamemode>(GetWorld()->GetAuthGameMode())->LoadGame();
+	USaveGameHUD* SaveGameHUD = CreateWidget<USaveGameHUD>(this, USaveGameHUD::StaticClass());
+	SaveGameHUD->AddToViewport();
+	SaveGameHUD->SetVisibility(ESlateVisibility::Visible);
+	SetVisibility(ESlateVisibility::Hidden);
+	//Cast<AMenuGamemode>(GetWorld()->GetAuthGameMode())->LoadGame();
 }
 
 void UMainMenu::SwitchScreen()

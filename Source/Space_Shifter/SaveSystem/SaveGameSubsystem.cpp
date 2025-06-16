@@ -7,11 +7,11 @@
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
-#include "Space_Shifter/PlayerCharacter.h"
 #include "Space_Shifter/Player/ShifterController.h"
 
-void USaveGameSubsystem::CreateNewSave(const FString& SaveName)
+void USaveGameSubsystem::CreateNewSave(const USaveInformationSave* SaveInformation)
 {
+	FString SaveName = SaveInformation->SaveName;
 	const FString GameSavePath = GetSavePath(SaveName, GGameSaveLocation);
 	const FString PlayerPath = GetSavePath(SaveName, GPlayerSave);
 	const FString LevelSavePath = GetSavePath(SaveName, GLevelSave);
@@ -60,13 +60,14 @@ void USaveGameSubsystem::DeleteSave(const FString& SaveName)
 	}
 }
 
-TArray<FString> USaveGameSubsystem::GetSaves()
+TArray<USaveInformationSave*> USaveGameSubsystem::GetSaves()
 {
-	TArray<FString> SaveNames;
+	UE_LOG(LogTemp, Warning, TEXT("Get Saves"));
+	TArray<USaveInformationSave*> SaveNames;
 
 	if (!UGameplayStatics::DoesSaveGameExist(GSystemSave, 0))
 	{
-		
+		UE_LOG(LogTemp, Warning, TEXT("No Saves"));
 		return SaveNames;
 	}
 	const FString& SaveFolder = FPaths::ProjectSavedDir();
@@ -79,9 +80,9 @@ TArray<FString> USaveGameSubsystem::GetSaves()
 	{
 		FString GameName, SaveType;
 		File.Split(",", &GameName, &SaveType);
-		if (SaveType.Equals(GGameSaveLocation))
+		if (SaveType.Equals(GSaveSlotLocation))
 		{
-			SaveNames.Add(GameName);
+			SaveNames.Add(Cast<USaveInformationSave>(UGameplayStatics::LoadGameFromSlot(File, 0)));
 		}
 	}
 	return SaveNames;

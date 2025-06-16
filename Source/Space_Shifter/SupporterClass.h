@@ -8,6 +8,21 @@
 class ULevelSequence;
 
 UENUM(BlueprintType)
+enum ELevel
+{
+	FirstLevel,
+	LastLevel,
+};
+
+UENUM(BlueprintType)
+enum EDifficulty
+{
+	Easy,
+	Normal,
+	Hard,
+};
+
+UENUM(BlueprintType)
 enum ECharacterName
 {
 	Player,

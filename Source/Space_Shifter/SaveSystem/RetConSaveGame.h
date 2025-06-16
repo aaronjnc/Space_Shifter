@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include <Space_Shifter/SupporterClass.h>
 #include "RetConSaveGame.generated.h"
 
 USTRUCT()
@@ -68,6 +69,35 @@ public:
 
 	UPROPERTY()
 	TMap<FString, FPlayerComponentSaveData> PlayerComponents;
+};
+
+UCLASS()
+class SPACE_SHIFTER_API USaveInformationSave : public USaveGame
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY()
+	FString SaveName;
+
+	UPROPERTY()
+	TEnumAsByte<ELevel> CurrentLevel;
+
+	UPROPERTY()
+	int PlayTime;
+
+	UPROPERTY()
+	int StartDate;
+
+	UPROPERTY()
+	int LastPlayed;
+
+	UPROPERTY()
+	UTexture2D* SaveImage;
+
+	UPROPERTY()
+	TEnumAsByte<EDifficulty> Difficulty;
 };
 
 /**

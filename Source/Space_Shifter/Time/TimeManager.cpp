@@ -5,6 +5,7 @@
 
 #include "TimeEvent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Space_Shifter/GameStructure/MenuGamemode.h"
 #include "Space_Shifter/GameStructure/QuestManager.h"
 #include "Space_Shifter/SaveSystem/SaveGameSubsystem.h"
 
@@ -95,6 +96,10 @@ void UTimeManager::Initialize(FSubsystemCollectionBase& Collection)
 void UTimeManager::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
+	if (UGameplayStatics::GetGameMode(GetWorld())->IsA<AMenuGamemode>())
+	{
+		return;
+	}
 	SetCountdownTimer(UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UQuestManager>()->GetQuestTimeLimit());
 	for (int i = 0; i < MaxStamps; i++)
 	{
@@ -125,4 +130,9 @@ void UTimeManager::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+TStatId UTimeManager::GetStatId() const
+{
+	return TStatId();
 }
