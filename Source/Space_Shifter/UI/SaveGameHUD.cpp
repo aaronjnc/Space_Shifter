@@ -14,6 +14,18 @@ void USaveGameHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	WorldRef = GetWorld();
+
+	if (WorldRef)
+    {
+        // Safe to use World here
+        UE_LOG(LogTemp, Log, TEXT("World is: %s"), *WorldRef->GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("World was null in NativeConstruct"));
+    }
+
 	UpdateSaveList();
 
 	UE_LOG(LogTemp, Warning, TEXT("Create Bindings"));
@@ -45,16 +57,7 @@ void USaveGameHUD::UpdateSaveList()
 	UE_LOG(LogTemp, Warning, TEXT("Update Save List"));
 	SaveList->ClearListItems();
 
-	if (UGameplayStatics::GetGameInstance(GetWorld()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Game Instance exists"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Game Instance does not exist"));
-	}
-
-	TArray<USaveInformationSave*> GameSaves = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USaveGameSubsystem>()->GetSaves();
+	TArray<USaveInformationSave*> GameSaves = USaveGameSubsystem::GetSaves();
 
 	if (GameSaves.Num() == 0)
 	{
@@ -63,7 +66,7 @@ void USaveGameHUD::UpdateSaveList()
 
 	for (USaveInformationSave* GameSave : GameSaves)
 	{
-		USaveSlotHUD* NewItem = CreateWidget<USaveSlotHUD>(GetWorld(), USaveSlotHUD::StaticClass());
+		USaveSlotHUD* NewItem = CreateWidget<USaveSlotHUD>(WorldRef, USaveSlotHUD::StaticClass());
 		NewItem->SetupSaveSlot(GameSave);
 		SaveList->AddItem(NewItem);
 	}

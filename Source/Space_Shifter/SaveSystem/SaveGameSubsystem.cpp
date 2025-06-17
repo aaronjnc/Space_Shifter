@@ -65,7 +65,7 @@ TArray<USaveInformationSave*> USaveGameSubsystem::GetSaves()
 	UE_LOG(LogTemp, Warning, TEXT("Get Saves"));
 	TArray<USaveInformationSave*> SaveNames;
 
-	if (!UGameplayStatics::DoesSaveGameExist(GSystemSave, 0))
+	if (!UGameplayStatics::DoesSaveGameExist("System_Save", 0))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Saves"));
 		return SaveNames;
@@ -78,9 +78,10 @@ TArray<USaveInformationSave*> USaveGameSubsystem::GetSaves()
 	FileManager.FindFiles(FileNames, *SaveFolder, true, false);
 	for (FString File : FileNames)
 	{
+		FString FileName = FPaths::GetBaseFilename(File);
 		FString GameName, SaveType;
 		File.Split(",", &GameName, &SaveType);
-		if (SaveType.Equals(GSaveSlotLocation))
+		if (SaveType.Equals("_GameSave"))
 		{
 			SaveNames.Add(Cast<USaveInformationSave>(UGameplayStatics::LoadGameFromSlot(File, 0)));
 		}

@@ -66,6 +66,9 @@ class SPACE_SHIFTER_API USaveGameHUD : public UUserWidget
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	UImage* SaveImage;
 
+	UPROPERTY()
+	UWorld* WorldRef;
+
 public:
 
 	virtual void NativeConstruct() override;
