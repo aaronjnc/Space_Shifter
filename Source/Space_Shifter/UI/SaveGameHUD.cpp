@@ -9,6 +9,7 @@
 #include "Components/Image.h"
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/ComboBoxString.h"
 
 void USaveGameHUD::NativeConstruct()
 {
@@ -26,11 +27,31 @@ void USaveGameHUD::NativeConstruct()
         UE_LOG(LogTemp, Warning, TEXT("World was null in NativeConstruct"));
     }
 
-	UpdateSaveList();
+	if (SaveList)
+	{
+		SaveList->OnItemSelectionChanged().AddUObject(this, &USaveGameHUD::SelectSave);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Save list invalid"));
+	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Create Bindings"));
-	SaveList->OnItemSelectionChanged().AddUObject(this, &USaveGameHUD::SelectSave);
-	CreateSave->OnClicked.AddDynamic(this, &USaveGameHUD::CreateGame);
+	if (CreateSave)
+	{
+		CreateSave->OnClicked.AddDynamic(this, &USaveGameHUD::CreateGame);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Create Save invalid"));
+	}
+
+	for (EDifficulty Diff : TEnumRange<EDifficulty>())
+	{
+		NewDifficulty->AddOption(UEnum::GetValueAsString(Diff));
+	}
+	NewDifficulty->SetSelectedOption(UEnum::GetValueAsString(EDifficulty::Normal));
+
+	UpdateSaveList();
 }
 
 void USaveGameHUD::SelectSave(UObject* Item)
@@ -42,17 +63,29 @@ void USaveGameHUD::SelectSave(UObject* Item)
 	LastSave->SetText(FText::FromString(FDateTime::FromUnixTimestamp(SaveGame->LastPlayed).ToFormattedString(TEXT("%Y-%m-%d %H:%M:%S"))));
 	SaveImage->SetBrushFromTexture(SaveGame->SaveImage);
 	Difficulty->SetText(FText::FromString(UEnum::GetValueAsString(SaveGame->Difficulty)));
+	WidgetSwitcher->SetActiveWidgetIndex(0);
 }
 
 void USaveGameHUD::CreateGame()
 {
 	USaveInformationSave* SaveInfo = Cast<USaveInformationSave>(UGameplayStatics::CreateSaveGameObject(USaveInformationSave::StaticClass()));
 	SaveInfo->SaveName = NewSaveName->GetText().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("Save Name: %s"), *SaveInfo->SaveName);
 	USaveGameSubsystem::CreateNewSave(SaveInfo);
 	UpdateSaveList();
 }
 
-void USaveGameHUD::UpdateSaveList()
+void USaveGameHUD::LoadGame()
+{
+	
+}
+
+void USaveGameHUD::DeleteGame()
+{
+	
+}
+
+void USaveGameHUD::UpdateSaveList() const
 {
 	UE_LOG(LogTemp, Warning, TEXT("Update Save List"));
 	SaveList->ClearListItems();
@@ -61,6 +94,7 @@ void USaveGameHUD::UpdateSaveList()
 
 	if (GameSaves.Num() == 0)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("No game saves"));
 		return;
 	}
 
@@ -70,5 +104,4 @@ void USaveGameHUD::UpdateSaveList()
 		NewItem->SetupSaveSlot(GameSave);
 		SaveList->AddItem(NewItem);
 	}
-
 }

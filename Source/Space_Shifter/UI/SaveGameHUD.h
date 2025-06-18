@@ -12,7 +12,7 @@ class UListView;
 class UTextBlock;
 class UImage;
 class UEditableTextBox;
-class UComboBoxKey;
+class UComboBoxString;
 /**
  * 
  */
@@ -28,7 +28,7 @@ class SPACE_SHIFTER_API USaveGameHUD : public UUserWidget
 	UEditableTextBox* NewSaveName;
 
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
-	UComboBoxKey* NewDifficulty;
+	UComboBoxString* NewDifficulty;
 
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	UButton* CreateSave;
@@ -79,14 +79,14 @@ public:
 	UFUNCTION()
 	void CreateGame();
 
-	void LoadSaves();
-
+	UFUNCTION()
 	void LoadGame();
 
-	
+	UFUNCTION()
+	void DeleteGame();
 
 private:
 
-	void UpdateSaveList();
+	void UpdateSaveList() const;
 
 };

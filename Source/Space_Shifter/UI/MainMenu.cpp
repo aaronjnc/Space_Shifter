@@ -60,7 +60,7 @@ bool UMainMenu::Initialize()
 void UMainMenu::Start()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Clicked"));
-	USaveGameHUD* SaveGameHUD = CreateWidget<USaveGameHUD>(this, USaveGameHUD::StaticClass());
+	SaveGameHUD = CreateWidget<USaveGameHUD>(GetWorld(), SaveGameHUDClass);
 	SaveGameHUD->AddToViewport();
 	SaveGameHUD->SetVisibility(ESlateVisibility::Visible);
 	SetVisibility(ESlateVisibility::Hidden);

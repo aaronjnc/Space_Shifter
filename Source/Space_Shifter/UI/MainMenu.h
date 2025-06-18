@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenu.generated.h"
 
+class USaveGameHUD;
 /**
  * 
  */
@@ -29,6 +30,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	UWidgetSwitcher* ScreenSwitch;
+
+	UPROPERTY()
+	USaveGameHUD* SaveGameHUD;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USaveGameHUD> SaveGameHUDClass;
 
 public:
 

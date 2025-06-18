@@ -11,6 +11,11 @@
 void USaveSlotHUD::SetupSaveSlot(USaveInformationSave* SaveGame)
 {
 	SaveSlot = SaveGame;
+	if (!SaveSlot)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Save Slot"));
+		return;
+	}
 	SaveName->SetText(FText::FromString(SaveGame->SaveName));
 	CurrentLevel->SetText(FText::FromString(UEnum::GetValueAsString(SaveGame->CurrentLevel.GetValue())));
 	SaveTime->SetText(FText::FromString(FDateTime::FromUnixTimestamp(SaveGame->StartDate).ToFormattedString(TEXT("%Y-%m-%d %H:%M:%S"))));

@@ -65,23 +65,30 @@ TArray<USaveInformationSave*> USaveGameSubsystem::GetSaves()
 	UE_LOG(LogTemp, Warning, TEXT("Get Saves"));
 	TArray<USaveInformationSave*> SaveNames;
 
-	if (!UGameplayStatics::DoesSaveGameExist("System_Save", 0))
+	/*if (!UGameplayStatics::DoesSaveGameExist(GSystemSave, 0))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Saves"));
 		return SaveNames;
-	}
-	const FString& SaveFolder = FPaths::ProjectSavedDir();
+	}*/
+	const FString& SaveFolder = FPaths::ProjectSavedDir() + "SaveGames";
 	
 	IFileManager& FileManager = IFileManager::Get();
 
+	const FString SaveGameExt = TEXT("sav");
+
 	TArray<FString> FileNames;
-	FileManager.FindFiles(FileNames, *SaveFolder, true, false);
+	FileManager.FindFiles(FileNames, *SaveFolder, *SaveGameExt);
+	UE_LOG(LogTemp, Warning, TEXT("File Names: %d"), FileNames.Num());
 	for (FString File : FileNames)
 	{
 		FString FileName = FPaths::GetBaseFilename(File);
 		FString GameName, SaveType;
-		File.Split(",", &GameName, &SaveType);
-		if (SaveType.Equals("_GameSave"))
+		UE_LOG(LogTemp, Warning, TEXT("Save Name: %s"), *FileName);
+		File.Split("_", &GameName, &SaveType);
+		SaveType = SaveType.Replace(*FString(".sav"), *FString(""));
+		UE_LOG(LogTemp, Warning, TEXT("Right chop: %s"), *SaveType);
+		UE_LOG(LogTemp, Warning, TEXT("Right chop: %s"), *GGameSaveLocation.RightChop(0));
+		if (SaveType.Equals(GGameSaveLocation.RightChop(0)))
 		{
 			SaveNames.Add(Cast<USaveInformationSave>(UGameplayStatics::LoadGameFromSlot(File, 0)));
 		}

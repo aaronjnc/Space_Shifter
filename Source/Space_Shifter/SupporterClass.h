@@ -20,7 +20,9 @@ enum EDifficulty
 	Easy,
 	Normal,
 	Hard,
+	Difficulty_Max UMETA(Hidden)
 };
+ENUM_RANGE_BY_COUNT(EDifficulty, EDifficulty::Difficulty_Max);
 
 UENUM(BlueprintType)
 enum ECharacterName
